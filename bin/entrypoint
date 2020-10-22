@@ -1,0 +1,4 @@
+#!/bin/sh
+
+./bin/run db-sync "$@"
+./bin/run start "$@"

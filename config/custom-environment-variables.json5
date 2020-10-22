@@ -1,0 +1,9 @@
+{
+  port: 'RIFSUS_PORT',
+  db: 'RIFSUS_DB',
+
+  cors: {
+    origin: "RIFSUS_CORS_ORIGIN",
+    methods: "RIFSUS_CORS_METHODS"
+  }
+}

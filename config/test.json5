@@ -1,0 +1,15 @@
+{
+  port: 3030,
+  db: 'db_test.sqlite',
+  comms: {
+    libp2p: {
+      config: {
+        peerDiscovery: {
+          bootstrap: {
+            enabled: false
+          }
+        }
+      }
+    }
+  },
+}
