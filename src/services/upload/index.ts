@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
     cb(null, path.join(process.cwd(), UPLOAD_FOLDER))
   },
   filename(req, file, cb) {
-    cb(null, `${Date.now()}.${file.mimetype.split('/')[1]}`)
+    cb(null, `${Date.now()}-${file.originalname.split('.')[0]}.${file.mimetype.split('/')[1]}`)
   },
 })
 

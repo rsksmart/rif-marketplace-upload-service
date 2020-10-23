@@ -12,26 +12,26 @@ export default function (storageProvider: ProviderManager, comms: Comms): Upload
     return async (req: any, res: any): Promise<void> => {
         const { offerId, agreementReference, peerId } = req.body
 
-        logger.info(`Receive file ${req.file.path} for offer ${offerId}, agreement ${agreementReference}, peerId ${peerId}`)
-
         if (!req.file) {
             return res.status(422).json({
                 error: 'File needs to be provided.'
             })
         }
 
+        logger.info(`Receive file ${req.file.filename} for offer ${offerId}, agreement ${agreementReference}, peerId ${peerId}`)
+
         // Create upload job
         const job = await UploadJob.create({ offerId, agreementReference, status: UploadJobStatus.UPLOADING })
-        logger.debug('Job created')
+        logger.info('Job created')
 
         // Read file from fs and start uploading to storage
         const data = await fs.promises.readFile(req.file.path)
         const { path: hash } = await storageProvider.add(data)
-        logger.debug(`File uploaded to IPFS, file hash ${hash}`)
+        logger.info(`File ${req.file.filename} uploaded to IPFS, file hash ${hash}`)
 
         // Unlink file from fs
         await fs.promises.unlink(req.file.path)
-        logger.debug('File removed from fs')
+        logger.info(`File ${req.file.filename} removed from fs`)
 
         // Update job
         job.peerId = peerId
@@ -45,7 +45,7 @@ export default function (storageProvider: ProviderManager, comms: Comms): Upload
         return res.json({
             message: 'File uploaded',
             fileHash: hash
-        });
+        })
     }
 }
 

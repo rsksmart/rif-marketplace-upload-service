@@ -67,10 +67,16 @@ export function validateServices (args: string[], onlyEnabledForAll = false): Su
  *
  * @param fn
  * @param logger
+ * @param exitOnError = false
  */
-export function errorHandler (fn: (...args: any[]) => Promise<any>, logger: Logger): (...args: any[]) => Promise<any> {
+export function errorHandler (fn: (...args: any[]) => Promise<any>, logger: Logger, exitOnError = false): (...args: any[]) => Promise<any> {
   return (...args) => {
-    return fn(...args).catch(err => logger.error(err))
+    return fn(...args).catch(err => {
+      logger.error(err)
+      if (exitOnError) {
+        process.exit()
+      }
+    })
   }
 }
 

@@ -52,7 +52,7 @@ export async function appFactory (): Promise<{ app: Application, stop: () => Pro
   // Configure each services
   const servicePromises: Promise<{ stop: () => void }>[] = []
   for (const service of Object.values(services)) {
-    app.configure((app) => servicePromises.push(errorHandler(service.initialize, logger)(app)))
+    app.configure((app) => servicePromises.push(errorHandler(service.initialize, logger, true)(app)))
   }
 
   // Wait for services to initialize
