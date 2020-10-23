@@ -137,3 +137,9 @@ export interface Provider {
   add (data: Buffer): Promise<IpfsResult>
   rm (hash: string): void
 }
+
+export enum UploadJobStatus {
+  UPLOADING = 'uploading',
+  WAITING_FOR_PINNING = 'waiting_for_pinning',
+  PINNED = 'PINNED'
+}

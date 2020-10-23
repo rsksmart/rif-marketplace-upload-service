@@ -11,9 +11,15 @@ export default class UploadJob extends Model {
   @Column({ allowNull: false })
   offerId!: string
 
+  @Column
+  fileHash!: string
+
+  @Column
+  peerId!: string
+
   @Column({ allowNull: false })
   status!: string
 
-  @Column({ type: DataType.JSON, allowNull: false })
+  @Column({ type: DataType.JSON })
   meta!: Record<any, any>
 }

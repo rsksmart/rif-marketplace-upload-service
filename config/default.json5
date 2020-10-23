@@ -12,11 +12,8 @@
   ipfs: {
     clientOptions: {
       // The default value for go-ipfs
-      url: 'http://localhost:5001',
-    },
-
-    // What is timeout for fetching size of given hash
-    sizeFetchTimeout: '4m'
+      url: 'http://localhost:5002',
+    }
   },
 
   // libp2p

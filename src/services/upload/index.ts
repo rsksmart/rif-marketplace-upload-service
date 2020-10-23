@@ -1,4 +1,6 @@
 import config from 'config'
+import multer from 'multer'
+import path from "path"
 
 import { Application, UploadService, ServiceAddresses } from '../../definitions'
 import { loggingFactory } from '../../logger'
@@ -15,6 +17,17 @@ import { sleep } from '../../../test/utils'
 const UPLOAD = 'upload'
 const logger = loggingFactory(UPLOAD)
 
+const storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, path.join(__dirname, 'uploads'))
+  },
+  filename(req, file, cb) {
+    cb(null, `${Date.now()}.${file.mimetype.split('/')[1]}`)
+  },
+})
+
+const uploadMiddleware = multer({ storage })
+
 const upload: UploadService = {
   async initialize (app: Application): Promise<{ stop: () => Promise<void> }> {
     if (!config.get<boolean>(`${UPLOAD}.enabled`)) {
@@ -25,21 +38,26 @@ const upload: UploadService = {
 
     await waitForReadyApp(app)
 
-    // Init comms
-    const comms = app.get('comms') as Comms
-    await comms.init()
-
     // Initialize Provider Manager
     const providerManager = new ProviderManager()
     const ipfs = await IpfsProvider.bootstrap(duplicateObject(config.get<string>('ipfs.clientOptions')))
     providerManager.register(ipfs)
     logger.info('IPFS provider initialized')
 
+    // Init comms
+    const comms = app.get('comms') as Comms
+    await comms.init(providerManager)
+
     // Init upload route
-    app.use(ServiceAddresses.Upload, errorHandler(uploadHandler(providerManager, comms), logger))
+    app.post(
+        ServiceAddresses.Upload,
+        uploadMiddleware.single('file'),
+        errorHandler(uploadHandler(providerManager, comms), logger)
+    )
 
     return {
       stop: async () => {
+        providerManager
         await comms.stop()
 
       }
