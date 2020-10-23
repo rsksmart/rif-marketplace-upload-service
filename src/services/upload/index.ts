@@ -1,4 +1,5 @@
 import config from 'config'
+import * as fs from 'fs'
 import multer from 'multer'
 import path from "path"
 
@@ -15,11 +16,12 @@ import {
 import { sleep } from '../../../test/utils'
 
 const UPLOAD = 'upload'
+const UPLOAD_FOLDER = 'uploads'
 const logger = loggingFactory(UPLOAD)
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    cb(null, path.join(__dirname, 'uploads'))
+    cb(null, path.join(process.cwd(), UPLOAD_FOLDER))
   },
   filename(req, file, cb) {
     cb(null, `${Date.now()}.${file.mimetype.split('/')[1]}`)
@@ -48,6 +50,12 @@ const upload: UploadService = {
     const comms = app.get('comms') as Comms
     await comms.init(providerManager)
 
+    // Create folder for upload files
+    const uploadFolderPath = path.resolve(process.cwd(), UPLOAD_FOLDER)
+    if (!fs.existsSync(uploadFolderPath)) {
+      fs.mkdirSync(uploadFolderPath)
+    }
+
     // Init upload route
     app.post(
         ServiceAddresses.Upload,
@@ -57,9 +65,7 @@ const upload: UploadService = {
 
     return {
       stop: async () => {
-        providerManager
         await comms.stop()
-
       }
     }
   },

@@ -21,7 +21,7 @@ const logger = loggingFactory('communication')
 const rooms = new Map<string, Room>()
 
 export function getRoomTopic (offerId: string): string {
-  return `${config.get<string>('blockchain.networkId')}:${offerId}`
+  return `${config.get<string>('networkId')}:${offerId}`
 }
 
 export async function initLibp2p (): Promise<Libp2p> {

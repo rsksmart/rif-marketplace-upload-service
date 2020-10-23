@@ -17,7 +17,7 @@ Currently supported services:
 ${formattedServices}`
   }
 
-  static examples = ['$ rif-storage-upload-service start --disable service1 --disable service2 --enable service3']
+  static examples = ['$ rif-storage-upload-service start']
 
   static flags = {
     ...BaseCLICommand.flags,

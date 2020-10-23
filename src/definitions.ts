@@ -32,6 +32,9 @@ export interface Config {
   // DB URI to connect to database
   db?: string
 
+  // NetworkId
+  networkId?: string
+
   ipfs?: {
     clientOptions?: IpfsOptions
     sizeFetchTimeout?: number | string
