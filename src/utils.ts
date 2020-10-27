@@ -7,9 +7,7 @@ import fs from 'fs'
 import {
   Application,
   Config,
-  isSupportedServices,
   Logger,
-  SupportedServices
 } from './definitions'
 
 const readFile = promisify(fs.readFile)
@@ -30,36 +28,6 @@ export function duplicateObject<T> (obj: T): T {
   return JSON.parse(JSON.stringify(obj))
 }
 
-/**
- * Function mainly for CLI that validates the given list of string if they are valid service's names
- * or if it is "all" (in case that is allowed).
- *
- * It returns the list of services. In case of "all" then it is expanded to list of all service's names.
- * @param args
- * @param onlyEnabledForAll
- */
-export function validateServices (args: string[], onlyEnabledForAll = false): SupportedServices[] {
-  if (args.length === 0) {
-    throw new Error('You have to specify a service!')
-  }
-
-  if (args.length === 1 && args[0] === 'all') {
-    if (!onlyEnabledForAll) {
-      return Object.values(SupportedServices)
-    }
-
-    return Object.values(SupportedServices)
-      .filter(service => config.get(`${service}.enabled`))
-  }
-
-  for (const service of args) {
-    if (!isSupportedServices(service)) {
-      throw new Error(`${service} is not valid service name!`)
-    }
-  }
-
-  return args as SupportedServices[]
-}
 
 /**
  * General handler closure function mainly for Event Emitters, which in case of rejected promise logs the rejection

@@ -10,10 +10,6 @@
 
   networkId: '420',
 
-  upload: {
-    enabled: true
-  },
-
   // ipfs
   ipfs: {
     clientOptions: {

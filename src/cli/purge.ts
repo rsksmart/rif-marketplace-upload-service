@@ -1,8 +1,8 @@
-import { services } from '../app'
 import Listr from 'listr'
 
+import uploadService from '../upload'
 import { sequelizeFactory } from '../sequelize'
-import { BaseCLICommand, capitalizeFirstLetter, validateServices } from '../utils'
+import { BaseCLICommand } from '../utils'
 import { SupportedServices } from '../definitions'
 
 export default class Purge extends BaseCLICommand {
@@ -30,27 +30,14 @@ ${formattedServices}`
   async run (): Promise<void> {
     const { argv } = this.parse(Purge)
 
-    let servicesToPurge
-    try {
-      servicesToPurge = validateServices(argv)
-    } catch (e) {
-      this.error(e.message)
-    }
-
     // Init database connection
     const sequelize = sequelizeFactory()
 
-    const tasksDefinition = servicesToPurge.map(
-      serviceName => {
-        return {
-          title: capitalizeFirstLetter(serviceName),
-          task: services[serviceName].purge
-        }
-      }
-    )
-
     this.log('Removing cached data for service:')
-    const tasks = new Listr(tasksDefinition)
+    const tasks = new Listr([{
+      title: 'Upload service',
+      task: uploadService.purge
+    }])
     await tasks.run()
     this.exit(0)
   }
