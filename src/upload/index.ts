@@ -3,17 +3,12 @@ import * as fs from 'fs'
 import multer from 'multer'
 import path from "path"
 
-import { Application, UploadService, ServiceAddresses } from '../../definitions'
-import { loggingFactory } from '../../logger'
-import { duplicateObject, errorHandler, waitForReadyApp } from '../../utils'
-import { ProviderManager } from './providers'
-import { IpfsProvider } from './providers/ipfs'
+import { Application, UploadService, ServiceAddresses } from '../definitions'
+import { loggingFactory } from '../logger'
+import { errorHandler, waitForReadyApp } from '../utils'
 import UploadJob from './upload.model'
 import uploadHandler from './upload.handler'
-import {
-  Comms
-} from '../../communication'
-import { sleep } from '../../../test/utils'
+import { sleep } from '../../test/utils'
 
 const UPLOAD = 'upload'
 const UPLOAD_FOLDER = 'uploads'
@@ -40,15 +35,8 @@ const upload: UploadService = {
 
     await waitForReadyApp(app)
 
-    // Initialize Provider Manager
-    const providerManager = new ProviderManager()
-    const ipfs = await IpfsProvider.bootstrap(duplicateObject(config.get<string>('ipfs.clientOptions')))
-    providerManager.register(ipfs)
-    logger.info('IPFS provider initialized')
-
-    // Init comms
-    const comms = app.get('comms') as Comms
-    await comms.init(providerManager)
+    const libp2p = app.get('libp2p')
+    const providerManager = app.get('storage')
 
     // Create folder for upload files
     const uploadFolderPath = path.resolve(process.cwd(), UPLOAD_FOLDER)
@@ -60,13 +48,11 @@ const upload: UploadService = {
     app.post(
         ServiceAddresses.Upload,
         uploadMiddleware.single('file'),
-        errorHandler(uploadHandler(providerManager, comms), logger)
+        errorHandler(uploadHandler(providerManager, libp2p), logger)
     )
 
     return {
-      stop: async () => {
-        await comms.stop()
-      }
+      stop: async () => undefined
     }
   },
 

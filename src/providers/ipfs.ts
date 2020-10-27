@@ -1,9 +1,9 @@
 import ipfsClient, { CID, ClientOptions, IpfsClient, IpfsResult, Version } from 'ipfs-http-client'
 import * as semver from 'semver'
 
-import type { Provider } from '../../../definitions'
-import { NotPinnedError } from '../../../errors'
-import { loggingFactory } from '../../../logger'
+import type { Provider } from '../definitions'
+import { NotPinnedError } from '../errors'
+import { loggingFactory } from '../logger'
 
 const logger = loggingFactory('ipfs')
 
@@ -41,6 +41,10 @@ export class IpfsProvider implements Provider {
     }
 
     return new this(ipfs)
+  }
+
+  version (): Promise<Version> {
+    return this.ipfs.version()
   }
 
   /**

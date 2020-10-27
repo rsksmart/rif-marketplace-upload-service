@@ -12,18 +12,12 @@ import { Application, SupportedServices } from './definitions'
 import { loggingFactory } from './logger'
 import sequelize from './sequelize'
 import healthcheck from './healthcheck'
-import communication from './communication'
+import communication, { stopComms } from './communication'
+import storageProvider from './providers'
+import uploadService from './upload'
 import { errorHandler } from './utils'
 
-
-import upload from './services/upload'
-
 const logger = loggingFactory()
-
-export const services = {
-  [SupportedServices.UPLOAD]: upload,
-}
-
 
 export async function appFactory (): Promise<{ app: Application, stop: () => Promise<void> }> {
   const app: Application = express(feathers())
@@ -46,17 +40,12 @@ export async function appFactory (): Promise<{ app: Application, stop: () => Pro
   app.configure(sequelize)
   app.configure(healthcheck)
   app.configure(communication)
+  app.configure(storageProvider)
 
   /**********************************************************/
 
-  // Configure each services
-  const servicePromises: Promise<{ stop: () => void }>[] = []
-  for (const service of Object.values(services)) {
-    app.configure((app) => servicePromises.push(errorHandler(service.initialize, logger, true)(app)))
-  }
-
-  // Wait for services to initialize
-  const servicesInstances = await Promise.all(servicePromises)
+  // Init upload service
+  const uploadServiceInstance = await errorHandler(uploadService.initialize, logger, true)(app)
 
   // Log errors in hooks
   app.hooks({
@@ -72,8 +61,9 @@ export async function appFactory (): Promise<{ app: Application, stop: () => Pro
   return {
     app,
     stop: async () => {
-      servicesInstances.forEach(service => service.stop())
+      await uploadServiceInstance.stop()
       const sequelize = app.get('sequelize') as Sequelize
+      await stopComms(app.get('libp2p'))
       await sequelize.close()
     }
   }
