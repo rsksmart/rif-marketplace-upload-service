@@ -26,23 +26,25 @@ export async function initLibp2p (): Promise<Libp2p> {
     return createLibP2P({ ...libp2pConf, peerId: await PeerId.create() })
 }
 
-export function getRoom (topic: string): Room | undefined {
-    return rooms.get(topic)
+export function getRoom (job: UploadJob): Room | undefined {
+    const topic = getRoomTopic(job.offerId)
+    return rooms.get(`${topic}:${job.fileHash}`)
 }
 
 export function subscribeForOffer (libp2p: Libp2p, storageProvider: ProviderManager, job: UploadJob): void {
-    if (libp2p) {
+    if (!libp2p) {
         throw new Error('Libp2p not initialized')
     }
     const topic = getRoomTopic(job.offerId)
+    const roomKey = `${topic}:${job.fileHash}`
 
-    if (rooms.has(topic)) {
-        rooms.get(topic)?.leave()
+    if (rooms.has(roomKey)) {
+        rooms.get(roomKey)?.leave()
     }
     const roomLogger = loggingFactory(`communication:room:${topic}`)
     const handler = errorHandler(messageHandler(job, storageProvider), roomLogger)
     const room = new Room(libp2p, topic)
-    rooms.set(topic, room) // store room to be able to leave the channel when offer is terminated
+    rooms.set(roomKey, room) // store room to be able to leave the channel when offer is terminated
     roomLogger.info(`Created room for topic: ${topic}`)
 
     room.on('message', async ({ from, data: message }: Message<any>) => {
@@ -56,6 +58,7 @@ export function subscribeForOffer (libp2p: Libp2p, storageProvider: ProviderMana
         if (from !== job.peerId) {
             return
         }
+
         await handler(message as CommsMessage<CommsPayloads>)
     })
     room.on('peer:joined', (peer) => roomLogger.debug(`${topic}: peer ${peer} joined`))

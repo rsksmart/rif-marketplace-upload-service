@@ -11,7 +11,7 @@ type UploadRouteHandler = (req: any, res: any) => Promise<void>
 
 export default function (storageProvider: ProviderManager, libp2p: Libp2p): UploadRouteHandler {
     return async (req: any, res: any): Promise<void> => {
-        const { offerId, agreementReference, peerId } = req.body
+        const { offerId, peerId } = req.body
 
         if (!req.file) {
             return res.status(422).json({
@@ -19,12 +19,11 @@ export default function (storageProvider: ProviderManager, libp2p: Libp2p): Uplo
             })
         }
 
-        logger.info(`Receive file ${req.file.filename} for offer ${offerId}, agreement ${agreementReference}, peerId ${peerId}`)
+        logger.info(`Receive file ${req.file.filename} for offer ${offerId}, peerId ${peerId}`)
 
         // Create upload job
         const job = await UploadJob.create({
             offerId,
-            agreementReference,
             peerId,
             meta: { filename: req.file.originalname },
             status: UploadJobStatus.UPLOADING
@@ -41,7 +40,7 @@ export default function (storageProvider: ProviderManager, libp2p: Libp2p): Uplo
         logger.info(`File ${req.file.filename} removed from fs`)
 
         // Update job
-        job.fileHash = cid.toString()
+        job.fileHash = `/ipfs/${cid.toString()}`
         job.status = UploadJobStatus.WAITING_FOR_PINNING
         await job.save()
 

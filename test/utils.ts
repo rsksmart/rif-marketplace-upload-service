@@ -54,8 +54,8 @@ export function createLibp2pRoom (libp2p: Libp2p, offerId: string): Room {
   roomPinner.on('peer:joined', (peer) => logger.debug(`${roomName}: peer ${peer} joined`))
   roomPinner.on('peer:left', (peer) => logger.debug(`${roomName}: peer ${peer} left`))
   roomPinner.on('message', (msg: Message) => {
-    if (msg.from === libp2p.peerId.toJSON().id) return
     logger.info(`Receive message: ${JSON.stringify(msg.data)}`)
+    if (msg.from === libp2p.peerId.toJSON().id) return
   })
   roomPinner.on('error', (e) => logger.error(e))
   return roomPinner

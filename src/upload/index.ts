@@ -27,12 +27,6 @@ const uploadMiddleware = multer({ storage })
 
 const upload: UploadService = {
   async initialize (app: Application): Promise<{ stop: () => Promise<void> }> {
-    if (!config.get<boolean>(`${UPLOAD}.enabled`)) {
-      logger.info('Upload service: disabled')
-      return { stop: () => Promise.resolve() }
-    }
-    logger.info('Upload service: enabled')
-
     await waitForReadyApp(app)
 
     const libp2p = app.get('libp2p')
