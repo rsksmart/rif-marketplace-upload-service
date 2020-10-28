@@ -92,11 +92,12 @@ export interface Logger {
  */
 
 export enum MessageCodesEnum {
-  I_HASH_PINNED = 'I_HASH_STOP', // CONSUMER
+  I_AGREEMENT_NEW = 'I_AGR_NEW',
+  I_HASH_PINNED = 'I_HASH_STOP',
   I_HASH_START = 'I_HASH_START',
-  E_AGREEMENT_SIZE_LIMIT_EXCEEDED = 'E_AGR_SIZE_OVERFLOW', // CONSUMER
+  E_AGREEMENT_SIZE_LIMIT_EXCEEDED = 'E_AGR_SIZE_OVERFLOW',
   E_GENERAL = 'E_GEN',
-  W_HASH_RETRY = 'W_HASH_RETRY',
+  W_HASH_RETRY = 'W_HASH_RETRY'
 }
 
 interface BasePayload {
@@ -142,7 +143,7 @@ export interface Provider {
 }
 
 export enum UploadJobStatus {
-  UPLOADING = 'uploading',
-  WAITING_FOR_PINNING = 'waiting_for_pinning',
+  UPLOADING = 'UPLOADING',
+  WAITING_FOR_PINNING = 'WAITING_FOR_PINNING',
   PINNED = 'PINNED'
 }

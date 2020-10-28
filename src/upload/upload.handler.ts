@@ -45,7 +45,7 @@ export default function (storageProvider: ProviderManager, libp2p: Libp2p): Uplo
         await job.save()
 
         // Register room
-        await subscribeForOffer(libp2p, storageProvider, job)
+        await subscribeForOffer(libp2p, storageProvider, offerId, peerId)
 
         return res.json({
             message: 'File uploaded',
