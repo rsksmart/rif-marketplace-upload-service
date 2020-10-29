@@ -8,7 +8,7 @@ import express from '@feathersjs/express'
 import socketio from '@feathersjs/socketio'
 import { Sequelize } from 'sequelize'
 
-import { Application, SupportedServices } from './definitions'
+import { Application } from './definitions'
 import { loggingFactory } from './logger'
 import sequelize from './sequelize'
 import healthcheck from './healthcheck'
@@ -60,7 +60,7 @@ export async function appFactory (): Promise<{ app: Application, stop: () => Pro
 
   return {
     app,
-    stop: async () => {
+    stop: async (): Promise<void> => {
       await uploadServiceInstance.stop()
       const sequelize = app.get('sequelize') as Sequelize
       await stopComms(app.get('libp2p'))

@@ -1,17 +1,13 @@
 import config from 'config'
 import { promises as fs } from 'fs'
 import path from 'path'
-import { reset as resetStore } from 'sequelize-store'
 import { Sequelize } from 'sequelize'
-import feathers from '@feathersjs/feathers'
-import socketio from '@feathersjs/socketio-client'
-import io from 'socket.io-client'
 import PeerId from 'peer-id'
 
 import { loggingFactory } from '../../src/logger'
-import { appFactory, services } from '../../src/app'
+import { appFactory } from '../../src/app'
 import { sequelizeFactory } from '../../src/sequelize'
-import { Application, SupportedServices } from '../../src/definitions'
+import { Application } from '../../src/definitions'
 
 export class TestingApp {
   private readonly logger = loggingFactory('test:test-app')
@@ -38,16 +34,6 @@ export class TestingApp {
     const sequelize = await sequelizeFactory()
     await sequelize.sync({ force: true })
     this.logger.info('Database initialized')
-
-    // Precache
-    await this.precache()
-    this.logger.info('Database precached')
-  }
-
-  async precache () {
-    for (const service of Object.values(SupportedServices).filter(service => config.get(`${service}.enabled`))) {
-      await services[service].precache()
-    }
   }
 
   async start (options?: Partial<any>): Promise<void> {
@@ -74,7 +60,6 @@ export class TestingApp {
     }
 
     await this.sequelize?.close()
-    resetStore()
 
     this.sequelize = undefined
     this.app = undefined
@@ -91,15 +76,4 @@ export class TestingApp {
       }
     }
   }
-
-}
-
-export function getFeatherClient () {
-  const socket = io(`http://localhost:${config.get('port')}`)
-  const app = feathers()
-
-  // Set up Socket.io client with the socket
-  app.configure(socketio(socket))
-
-  return app
 }

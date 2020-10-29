@@ -3,7 +3,6 @@ import * as Parser from '@oclif/parser'
 import { ClientOptions as IpfsOptions, IpfsResult } from 'ipfs-http-client'
 import type { Options as Libp2pOptions } from 'libp2p'
 
-
 export enum SupportedServices {
   UPLOAD = 'upload'
 }
@@ -38,6 +37,10 @@ export interface Config {
   ipfs?: {
     clientOptions?: IpfsOptions
     sizeFetchTimeout?: number | string
+  }
+
+  gc?: {
+    jobTtl?: number
   }
 
   log?: {
@@ -92,7 +95,6 @@ export interface Logger {
  */
 
 export enum MessageCodesEnum {
-  I_AGREEMENT_NEW = 'I_AGR_NEW',
   I_HASH_PINNED = 'I_HASH_STOP',
   I_HASH_START = 'I_HASH_START',
   E_AGREEMENT_SIZE_LIMIT_EXCEEDED = 'E_AGR_SIZE_OVERFLOW',
@@ -144,6 +146,5 @@ export interface Provider {
 
 export enum UploadJobStatus {
   UPLOADING = 'UPLOADING',
-  WAITING_FOR_PINNING = 'WAITING_FOR_PINNING',
-  PINNED = 'PINNED'
+  WAITING_FOR_PINNING = 'WAITING_FOR_PINNING'
 }

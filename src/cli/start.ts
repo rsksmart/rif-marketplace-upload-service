@@ -73,6 +73,7 @@ ${formattedServices}`
     return output
   }
 
+  // eslint-disable-next-line require-await
   async run (): Promise<void> {
     const { flags } = this.parse(StartServer)
 
@@ -80,17 +81,16 @@ ${formattedServices}`
     config.util.extendDeep(config, configOverrides)
 
     appFactory().then(({ app }) => {
-
       // Start server
       const port = config.get('port')
       const server = app.listen(port)
 
       server.on('listening', () =>
-          logger.info(`Server started on port ${port}`)
+        logger.info(`Server started on port ${port}`)
       )
 
       process.on('unhandledRejection', err =>
-          logger.error(`Unhandled Rejection at: ${err}`)
+        logger.error(`Unhandled Rejection at: ${err}`)
       )
     })
   }
