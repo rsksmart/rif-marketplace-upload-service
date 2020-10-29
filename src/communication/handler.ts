@@ -17,7 +17,7 @@ async function hashPinnedHandler (
     storageProvider: ProviderManager,
     roomLogger: Logger
 ): Promise<void> {
-    // TODO add agreementReference to where
+    // TODO extend Pinnner
     const job = await UploadJob.findOne(
         {
             where: {
@@ -53,13 +53,15 @@ async function hashPinnedHandler (
 
 async function newAgreementHandler (
     message: CommsMessage<AgreementInfoPayload>,
-    offerId: string
+    offerId: string,
 ): Promise<void> {
+    // TODO extend Pinnner
     const [job] = await UploadJob.findAll({
         where: {
             offerId,
             status: { [Op.ne]: UploadJobStatus.PINNED },
-            // hash: `/ipfs/${message.payload.hash}`
+            // hash: `/ipfs/${message.payload.hash}`,
+            // account: message.payload.account
         }
     })
     job.agreementReference = message.payload.agreementReference

@@ -20,19 +20,18 @@ export function getRoomTopic (offerId: string): string {
     return `${config.get<string>('networkId')}:${offerId}`
 }
 
-export async function initLibp2p (): Promise<Libp2p> {
-    const libp2pConf = config.get<object>('comms.libp2p')
-    logger.info('Spawn libp2p node')
-    return createLibP2P({ ...libp2pConf, peerId: await PeerId.create() })
-}
-
 export function leaveRoom (job: UploadJob) {
     const topic = getRoomTopic(job.offerId)
     rooms.get(topic)?.leave()
     rooms.delete(topic)
 }
 
-export function subscribeForOffer (libp2p: Libp2p, storageProvider: ProviderManager, offerId: string, peerId: string): void {
+export function subscribeForOffer (
+    libp2p: Libp2p,
+    storageProvider: ProviderManager,
+    offerId: string,
+    peerId: string
+): void {
     if (!libp2p) {
         throw new Error('Libp2p not initialized')
     }
@@ -64,6 +63,12 @@ export function subscribeForOffer (libp2p: Libp2p, storageProvider: ProviderMana
     room.on('peer:joined', (peer) => roomLogger.debug(`${topic}: peer ${peer} joined`))
     room.on('peer:left', (peer) => roomLogger.debug(`${topic}: peer ${peer} left`))
     room.on('error', (e) => roomLogger.error(e))
+}
+
+export async function initLibp2p (): Promise<Libp2p> {
+    const libp2pConf = config.get<object>('comms.libp2p')
+    logger.info('Spawn libp2p node')
+    return createLibP2P({ ...libp2pConf, peerId: await PeerId.create() })
 }
 
 export async function initComms (app: Application) {

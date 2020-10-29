@@ -11,6 +11,9 @@ export default class UploadJob extends Model {
   @Column({ allowNull: false, type: DataType.STRING(64) })
   offerId!: string
 
+  @Column({ allowNull: false })
+  account!: string
+
   @Column
   fileHash!: string
 

@@ -11,7 +11,7 @@ type UploadRouteHandler = (req: any, res: any) => Promise<void>
 
 export default function (storageProvider: ProviderManager, libp2p: Libp2p): UploadRouteHandler {
     return async (req: any, res: any): Promise<void> => {
-        const { offerId, peerId } = req.body
+        const { offerId, peerId, account } = req.body
 
         if (!req.file) {
             return res.status(422).json({
@@ -25,6 +25,7 @@ export default function (storageProvider: ProviderManager, libp2p: Libp2p): Uplo
         const job = await UploadJob.create({
             offerId,
             peerId,
+            account,
             meta: { filename: req.file.originalname },
             status: UploadJobStatus.UPLOADING
         })
