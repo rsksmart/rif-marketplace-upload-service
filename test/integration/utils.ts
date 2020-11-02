@@ -11,9 +11,10 @@ import { Application } from '../../src/definitions'
 
 export class TestingApp {
   private readonly logger = loggingFactory('test:test-app')
-  private app: { stop: () => void, app: Application } | undefined
   public sequelize: Sequelize | undefined
+  public app: { stop: () => void, app: Application } | undefined
   public peerId: PeerId.JSONPeerId | undefined
+  public providerAddress = '0xiopqndsaProviderAddress'
 
   async initAndStart (options?: any, force = false): Promise<void> {
     if (this.app && !force) {
@@ -27,7 +28,7 @@ export class TestingApp {
 
   async init (): Promise<void> {
     this.peerId = (await PeerId.create()).toJSON()
-
+    // Purge DB
     await this.purgeDb()
     this.logger.info('Database removed')
     // Init DB

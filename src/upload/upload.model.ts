@@ -5,9 +5,6 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript'
   tableName: 'upload_job'
 })
 export default class UploadJob extends Model {
-  @Column({ allowNull: true, type: DataType.STRING(67) })
-  agreementReference!: string
-
   @Column({ allowNull: false, type: DataType.STRING(64) })
   offerId!: string
 

@@ -9,8 +9,8 @@ import UploadJob from './upload.model'
 import uploadHandler from './upload.handler'
 import { sleep } from '../../test/utils'
 
+export const UPLOAD_FOLDER = 'uploads'
 const UPLOAD = 'upload'
-const UPLOAD_FOLDER = 'uploads'
 const logger = loggingFactory(UPLOAD)
 
 const storage = multer.diskStorage({
