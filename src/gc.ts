@@ -27,6 +27,7 @@ export async function gcFiles (storageProvider: ProviderManager): Promise<void> 
   for (const job of jobsToRemove) {
     await storageProvider.rm(job.fileHash).catch(e => logger.error(e))
     await job.destroy()
+    logger.info(`Expired job ${job.id} file hash ${job.fileHash} is unpined and removed`)
   }
 
   // Leave rooms for no jobs offers
@@ -46,6 +47,8 @@ export default function (app: Application): { stop: () => void } {
   if (!gcInterval) {
     throw new Error('Invalid GC interval value')
   }
+
+  logger.info(`GC started with interval ${config.get('gc.interval')}`)
   const storageProvider = app.get('storage')
   const interval = setInterval(() => gcFiles(storageProvider), gcInterval)
   return { stop: () => clearInterval(interval) }

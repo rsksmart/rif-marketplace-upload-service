@@ -1,5 +1,6 @@
 import config from 'config'
 import { promises as fs } from 'fs'
+import { CID, IpfsClient } from 'ipfs-http-client'
 import path from 'path'
 import { Sequelize } from 'sequelize'
 import PeerId from 'peer-id'
@@ -76,5 +77,23 @@ export class TestingApp {
         throw e
       }
     }
+  }
+}
+
+export async function asyncIterableToArray (asyncIterable: any): Promise<Array<any>> {
+  const result = []
+  for await (const value of asyncIterable) {
+    result.push(value)
+  }
+  return result
+}
+
+export async function isPinned (ipfs: IpfsClient, cid: CID): Promise<boolean> {
+  try {
+    const [file] = await asyncIterableToArray(ipfs.pin.ls({ paths: cid }))
+    return file.cid.toString() === cid.toString()
+  } catch (e) {
+    if (e.message === `path '${cid}' is not pinned`) return false
+    throw e
   }
 }
