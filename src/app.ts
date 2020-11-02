@@ -14,6 +14,7 @@ import sequelize from './sequelize'
 import healthcheck from './healthcheck'
 import communication, { stopComms } from './communication'
 import storageProvider from './providers'
+import jobsGC from './gc'
 import uploadService from './upload'
 import { errorHandler } from './utils'
 
@@ -47,6 +48,9 @@ export async function appFactory (): Promise<{ app: Application, stop: () => Pro
   // Init upload service
   const uploadServiceInstance = await errorHandler(uploadService.initialize, logger, true)(app)
 
+  // Init Jobs GC
+  const stopGc = jobsGC(app)
+
   // Log errors in hooks
   app.hooks({
     error (context) {
@@ -61,6 +65,7 @@ export async function appFactory (): Promise<{ app: Application, stop: () => Pro
   return {
     app,
     stop: async (): Promise<void> => {
+      stopGc.stop()
       await uploadServiceInstance.stop()
       const sequelize = app.get('sequelize') as Sequelize
       await stopComms(app.get('libp2p'))

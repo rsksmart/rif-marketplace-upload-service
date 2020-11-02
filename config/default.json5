@@ -10,6 +10,11 @@
 
   networkId: '420',
 
+  gc: {
+    jobTtl: '12h',
+    interval: '1h'
+  },
+
   // ipfs
   ipfs: {
     clientOptions: {
