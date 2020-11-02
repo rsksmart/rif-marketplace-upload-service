@@ -9,6 +9,7 @@ import Libp2p from 'libp2p'
 import path from 'path'
 import config from 'config'
 import PeerId, { JSONPeerId } from 'peer-id'
+import { rooms } from '../../src/communication'
 
 import { MessageCodesEnum, ServiceAddresses, UploadJobStatus } from '../../src/definitions'
 import { ProviderManager } from '../../src/providers'
@@ -118,6 +119,8 @@ describe('Upload service', function () {
       const file2Response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, './test/integration/files/testFile2.txt')
       const file3Response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, './test/integration/files/testFile3.txt')
 
+      expect(rooms.size).to.be.eql(1)
+
       expect(file1Response.message).to.be.eql('File uploaded')
       expect(file1Response.fileHash).to.be.not.null()
       const job1 = await UploadJob.findOne({ where: { fileHash: `/ipfs/${file1Response.fileHash}` } })
@@ -136,12 +139,13 @@ describe('Upload service', function () {
       expect(await isPinned(ipfs, new CID(file3Response.fileHash))).to.be.true()
       expect(job3).to.be.instanceOf(UploadJob)
 
-      await sleep(15000)
+      await sleep(7000)
 
       expect(await isPinned(ipfs, new CID(file1Response.fileHash))).to.be.eql(false)
       expect(await isPinned(ipfs, new CID(file2Response.fileHash))).to.be.eql(false)
       expect(await isPinned(ipfs, new CID(file3Response.fileHash))).to.be.eql(false)
       expect(await UploadJob.count()).to.be.eql(0)
+      expect(rooms.size).to.be.eql(0)
     })
   })
   describe('Upload API', () => {

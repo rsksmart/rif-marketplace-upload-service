@@ -1,4 +1,4 @@
-import config from "config"
+import config from 'config'
 import { IpfsResult, Version } from 'ipfs-http-client'
 
 import { Application, Provider } from '../definitions'
@@ -30,7 +30,7 @@ export class ProviderManager implements Provider {
       return this.ipfs.version()
     } catch (e) {
       if (e.code === 'ECONNREFUSED') {
-        throw new Error(`No running IPFS daemon`)
+        throw new Error('No running IPFS daemon')
       }
 
       throw e
