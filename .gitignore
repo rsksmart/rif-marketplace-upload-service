@@ -3,6 +3,8 @@ lib
 types
 dist
 
+.eslintrc
+
 # Logs
 logs
 *.log
@@ -30,4 +32,6 @@ oclif.manifest.json
 
 # DB file
 *.sqlite
+
 .eslintrc.js
+/tsconfig.json
