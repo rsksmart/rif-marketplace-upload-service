@@ -3,9 +3,9 @@ import config from 'config'
 import chai from 'chai'
 import dirtyChai from 'dirty-chai'
 import sinon from 'sinon'
+
 import { getRoomTopic, rooms } from '../../src/communication'
 import { UploadJobStatus } from '../../src/definitions'
-
 import { gcFiles } from '../../src/gc'
 import { ProviderManager } from '../../src/providers'
 import * as comms from '../../src/communication'
