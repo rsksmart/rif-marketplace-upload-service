@@ -11,15 +11,16 @@ import UploadJob from './upload/upload.model'
 const logger = loggingFactory('jobs:gc')
 
 export async function gcFiles (storageProvider: ProviderManager): Promise<void> {
-  const jobsTtl = parse(config.get<string>('gc.jobTtl'))
-
-  if (!jobsTtl) {
+  let jobsTtl
+  try {
+    jobsTtl = parse(config.get<string>('gc.jobTtl'))
+  } catch (e) {
     throw new Error('Invalid jobs ttl value')
   }
 
   const jobsToRemove = await UploadJob.findAll({
     where: {
-      createdAt: { [Op.lte]: Date.now() - jobsTtl }
+      createdAt: { [Op.lte]: Date.now() - jobsTtl! }
     }
   })
 
