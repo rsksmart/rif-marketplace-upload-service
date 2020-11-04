@@ -15,7 +15,7 @@ const logger = loggingFactory('communication')
 export const rooms = new Map<string, Room>()
 
 export function getRoomTopic (offerId: string): string {
-  return `${config.get<string>('networkId')}:${offerId}`
+  return `${config.get<number>('networkId')}:${offerId}`
 }
 
 export function leaveRoom (topic: string): void {

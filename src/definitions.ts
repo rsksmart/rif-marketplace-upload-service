@@ -32,7 +32,7 @@ export interface Config {
   db?: string
 
   // NetworkId
-  networkId?: string
+  networkId?: number
 
   ipfs?: {
     clientOptions?: IpfsOptions

@@ -1,12 +1,12 @@
 {
   port: 3030,
+  networkId: 420,
   comms: {
     libp2p: {
       config: {
         peerDiscovery: {
           bootstrap: {
             enabled: false,
-            // Hardcoded address and port to PubSub Node server
           }
         }
       }

@@ -1,7 +1,7 @@
 # RIF Marketplace Upload Service
 
-[![CircleCI](https://flat.badgen.net/circleci/github/rsksmart/rif-marketplace-cache/master)](https://circleci.com/gh/rsksmart/rif-marketplace-cache/)
-[![Dependency Status](https://david-dm.org/rsksmart/rif-marketplace-cache.svg?style=flat-square)](https://david-dm.org/rsksmart/rif-marketplace-cache)
+[![CircleCI](https://flat.badgen.net/circleci/github/rsksmart/rif-marketplace-upload-service/master)](https://circleci.com/gh/rsksmart/rif-marketplace-upload-service/)
+[![Dependency Status](https://david-dm.org/rsksmart/rif-marketplace-upload-service.svg?style=flat-square)](https://david-dm.org/rsksmart/rif-marketplace-upload-service)
 [![](https://img.shields.io/badge/made%20by-IOVLabs-blue.svg?style=flat-square)](http://iovlabs.org)
 [![](https://img.shields.io/badge/project-RIF%20Marketplace-blue.svg?style=flat-square)](https://www.rifos.org/)
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
@@ -10,7 +10,7 @@
 ![](https://img.shields.io/badge/npm-%3E%3D6.0.0-orange.svg?style=flat-square)
 ![](https://img.shields.io/badge/Node.js-%3E%3D10.0.0-orange.svg?style=flat-square)
 
-> API server that caches different metrics from blockchain across RIF services
+> Service that allow to upload file to IPFS 
 
 **Warning: This project is in alpha state. There might (and most probably will) be changes in the future to its API and working. Also, no guarantees can be made about its stability, efficiency, and security at this stage.**
 
@@ -26,7 +26,7 @@
 
 ## Introduction
 
-This is a backend service for uploading files to IPFS which communicate with pinners using libp2p
+This is a backend service for uploading files to IPFS which communicate with pinners using libp2p.
 It is build using [FeathersJS](https://www.feathersjs.com)
 
 ## API
@@ -41,7 +41,7 @@ This api allow you to upload file
 POST: /upload
 
 MultiPartFormData: {
-  file: Buffer,
+  file: File,
   account: string,
   offerId: string,
   peerId: string
@@ -73,12 +73,14 @@ To run this upload service there is minimum configuration needed, which is suppo
  
 For general overview of complete configuration options see [Config interface](https://github.com/rsksmart/rif-marketplace-upload-service/blob/master/src/definitions.ts)
 that describe configuration object's properties. If you need advanced configuration you can build your own JSON configuration
-file and load that either using the `--config` CLI parameter or using environment variable `RIFM_CONFIG`.
+file and load that either using the `--config` CLI parameter or using environment variable `RIFMUS_CONFIG`.
 
 ### Environment variables overview
 
  - `RIFMUS_PORT` (number): port on which the server should listen to
  - `RIFMUS_DB` (string): database connection URI
+ - `RIFMUS_NETWORK_ID` (number): network id
+ - `RIFMUS_IPFS_URL` (string): IPFS Node url
  - CORS settings ([see more on expressjs documentation](https://expressjs.com/en/resources/middleware/cors.html)):
     - `RIFMUS_CORS_ORIGIN` (boolean | string | regexp): Configures the Access-Control-Allow-Origin CORS header
     - `RIFMUS_CORS_METHODS` (string) Configures the Access-Control-Allow-Methods CORS header
@@ -90,35 +92,25 @@ file and load that either using the `--config` CLI parameter or using environmen
 ## Usage
 
 ```sh-session
-$ npm install -g @rsksmart/rif-marketplace-cache
+$ npm install -g @rsksmart/rif-marketplace-upload-service
 
 // Connection to your database
-$ export RIFM_DB=postgres://user:pass@localhost/db
+$ export RIFMUS_DB=myDbDile.sqlite
 
 // Sync the schema of database
-$ rif-marketplace-cache db-sync
-
-// Connection to your blockchain provider
-$ export RIFM_PROVIDER=ws://localhost:8545
-
-// Prefetch all the data from the network
-$ rif-marketplace-cache precache all
+$ rif-storage-upload-service db-sync
 
 // Start the server
-$ rif-marketplace-cache start --port 8000
-
-// Start the server listening for testnet configuration
-$ NODE_ENV=rsktestnet rif-marketplace-cache start --port 8000
+$ rif-storage-upload-service start --port 8000
 ```
 
 For some more details on how to deploy this server please see [Deployment guide](./DEPLOYMENT.md).
 
 ### Commands
 <!-- commands -->
-* [`rif-marketplace-cache db-sync`](#rif-marketplace-cache-db-sync)
-* [`rif-marketplace-cache precache [SERVICE]`](#rif-marketplace-cache-precache-service)
-* [`rif-marketplace-cache purge [SERVICE]`](#rif-marketplace-cache-purge-service)
-* [`rif-marketplace-cache start`](#rif-marketplace-cache-start)
+* [`rif-storage-upload-service db-sync`](#rif-storage-upload-service-db-sync)
+* [`rif-storage-upload-service purge [SERVICE]`](#rif-storage-upload-service-purge)
+* [`rif-storage-upload-service start`](#rif-storage-upload-service-start)
 
 #### `rif-marketplace-cache db-sync`
 
@@ -126,98 +118,55 @@ synchronize database schema
 
 ```
 USAGE
-  $ rif-marketplace-cache db-sync
+  $ rif-storage-upload-service db-sync
 
 OPTIONS
-  --config=config              path to JSON config file to load
-  --db=db                      database connection URI
-  --force                      removes all tables and recreates them
-  --log=error|warn|info|debug  [default: error] what level of information to log
-  --log-filter=log-filter      what components should be logged (+-, chars allowed)
-  --log-path=log-path          log to file, default is STDOUT
-```
-
-#### `rif-marketplace-cache precache [SERVICE]`
-
-precache past data for a service
+  --config=config                      path to JSON config file to load
+  --db=db                              database connection URI
+  --force                              removes all tables and recreates them
+  --log=error|warn|info|verbose|debug  [default: warn] what level of information to log
+  --log-filter=log-filter              what components should be logged (+-, chars allowed)
+  --log-path=log-path                  log to file, default is STDOUT
 
 ```
-USAGE
-  $ rif-marketplace-cache precache [SERVICE]
 
-OPTIONS
-  --config=config              path to JSON config file to load
-  --log=error|warn|info|debug  [default: error] what level of information to log
-  --log-filter=log-filter      what components should be logged (+-, chars allowed)
-  --log-path=log-path          log to file, default is STDOUT
 
-DESCRIPTION
-  Command will fetch data from blockchain and process them prior turning on the API server.
-  Currently supported services:
-    - all
-    - storage
-    - rns
-    - rates
-
-EXAMPLES
-  $ rif-marketplace-cache precache all
-  $ rif-marketplace-cache precache storage rns
-```
-
-#### `rif-marketplace-cache purge [SERVICE]`
+#### `rif-storage-upload-service purge`
 
 purge cached data
 
 ```
 USAGE
-  $ rif-marketplace-cache purge [SERVICE]
+  $ rif-storage-upload-service purge
 
 OPTIONS
-  --config=config              path to JSON config file to load
-  --log=error|warn|info|debug  [default: error] what level of information to log
-  --log-filter=log-filter      what components should be logged (+-, chars allowed)
-  --log-path=log-path          log to file, default is STDOUT
+  --config=config                      path to JSON config file to load
+  --log=error|warn|info|verbose|debug  [default: warn] what level of information to log
+  --log-filter=log-filter              what components should be logged (+-, chars allowed)
+  --log-path=log-path                  log to file, default is STDOUT
 
-DESCRIPTION
-  Can purge all data or for specific service.
-  Currently supported services:
-    - all
-    - storage
-    - rns
-    - rates
-
-EXAMPLES
-  $ rif-marketplace-cache purge all
-  $ rif-marketplace-cache purge storage rns
+EXAMPLE
+  $ rif-storage-upload-service purge
 ```
 
-#### `rif-marketplace-cache start`
+#### `rif-storage-upload-service start`
 
-start the caching server
+start the upload service
 
 ```
 USAGE
-  $ rif-marketplace-cache start
+  $ rif-storage-upload-service start
 
 OPTIONS
-  -d, --disable=disable        disable specific service
-  -e, --enable=enable          enable specific service
-  -p, --port=port              port to attach the server to
-  --config=config              path to JSON config file to load
-  --db=db                      database connection URI
-  --log=error|warn|info|debug  [default: error] what level of information to log
-  --log-filter=log-filter      what components should be logged (+-, chars allowed)
-  --log-path=log-path          log to file, default is STDOUT
-  --provider=provider          blockchain provider connection URI
-
-DESCRIPTION
-  Currently supported services:
-    - storage
-    - rns
-    - rates
+  -p, --port=port                      port to attach the server to
+  --config=config                      path to JSON config file to load
+  --db=db                              database connection URI
+  --log=error|warn|info|verbose|debug  [default: warn] what level of information to log
+  --log-filter=log-filter              what components should be logged (+-, chars allowed)
+  --log-path=log-path                  log to file, default is STDOUT
 
 EXAMPLE
-  $ rif-marketplace-cache start --disable service1 --disable service2 --enable service3
+  $ rif-storage-upload-service start
 ```
 <!-- commandsstop -->
 

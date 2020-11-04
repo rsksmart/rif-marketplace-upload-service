@@ -2,6 +2,14 @@
   port: 'RIFMUS_PORT',
   db: 'RIFMUS_DB',
 
+  networkId: 'RIFMUS_NETWORK_ID',
+
+  ipfs: {
+    clientOptions: {
+      url: 'RIFMUS_IPFS_URL'
+    }
+  },
+
   cors: {
     origin: "RIFMUS_CORS_ORIGIN",
     methods: "RIFMUS_CORS_METHODS"
