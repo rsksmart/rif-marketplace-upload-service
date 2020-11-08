@@ -60,7 +60,7 @@ describe('GC', function () {
     // @ts-ignore
     config.gc.jobTtl = '5s'
 
-    rooms.set(getRoomTopic('test'), {} as PubSubRoom)
+    rooms.set(getRoomTopic('test'), { room: {} as PubSubRoom, peerId: 'testPeer' })
 
     const jobs = await UploadJob.bulkCreate([
       { offerId: 'test', account: 'testAcc', fileHash: 'file1', peerId: 'testPeer', status: UploadJobStatus.WAITING_FOR_PINNING },

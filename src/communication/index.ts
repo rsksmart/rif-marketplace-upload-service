@@ -11,15 +11,15 @@ import { errorHandler } from '../utils'
 
 const logger = loggingFactory('communication')
 
-// (offerId -> room) MAP
-export const rooms = new Map<string, Room>()
+// (offerId -> { room, peerId }) MAP
+export const rooms = new Map<string, { room: Room, peerId: string }>()
 
 export function getRoomTopic (offerId: string): string {
   return `${config.get<number>('networkId')}:${offerId}`
 }
 
 export function leaveRoom (topic: string): void {
-    rooms.get(topic)?.leave()
+    rooms.get(topic)?.room.leave()
     rooms.delete(topic)
 }
 
@@ -34,15 +34,19 @@ export function subscribeForOffer (
   }
   const topic = getRoomTopic(offerId)
 
-  // Do not create another rom\om for the same offer
+  // Check if room already existed
   if (rooms.has(topic)) {
-    return
+    if (rooms.get(topic)?.peerId === peerId) {
+      return
+    }
+    // Recreate room if peerId changed
+    rooms.get(topic)?.room.leave()
   }
 
   const roomLogger = loggingFactory(`communication:room:${topic}`)
   const handler = errorHandler(messageHandler(offerId, storageProvider, roomLogger), roomLogger)
   const room = new Room(libp2p, topic)
-  rooms.set(topic, room) // store room to be able to leave the channel when offer is terminated
+  rooms.set(topic, { room, peerId }) // store room to be able to leave the channel when offer is terminated
   roomLogger.info(`Created room for topic: ${topic}`)
 
   room.on('message', async ({ from, data: message }: Message<any>) => {

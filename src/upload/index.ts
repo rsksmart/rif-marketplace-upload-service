@@ -10,8 +10,7 @@ import uploadHandler from './upload.handler'
 import { sleep } from '../../test/utils'
 
 export const UPLOAD_FOLDER = 'uploads'
-const UPLOAD = 'upload'
-const logger = loggingFactory(UPLOAD)
+const logger = loggingFactory('upload')
 
 const storage = multer.diskStorage({
   destination (req, file, cb) {
@@ -45,11 +44,8 @@ const upload: UploadService = {
       errorHandler(uploadHandler(providerManager, libp2p), logger)
     )
 
-    // Run GC job
-    // await uploadJobGc(providerManager)
-
     return {
-      stop: () => Promise.resolve(undefined)
+      stop: () => Promise.resolve()
     }
   },
 
