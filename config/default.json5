@@ -1,0 +1,37 @@
+// For full syntax see /src/types.ts::Config interface
+{
+  db: 'db.sqlite',
+
+  // CORS setting, please consult https://expressjs.com/en/resources/middleware/cors.html for more details
+  cors: {
+    origin: '*',
+    methods: 'GET,HEAD'
+  },
+
+  gc: {
+    jobTtl: '12h',
+    interval: '1h'
+  },
+
+  // ipfs
+  ipfs: {
+    clientOptions: {
+      // The default value for go-ipfs
+      url: 'http://localhost:5002',
+    }
+  },
+
+  // libp2p
+  comms: {
+    libp2p: {
+      addresses: { listen: ['/ip4/127.0.0.1/tcp/0', '/ip4/127.0.0.1/tcp/0/ws'] }
+    }
+  },
+
+  log: {
+    level: "info",
+    filter: null,
+    path: null
+  },
+
+}
