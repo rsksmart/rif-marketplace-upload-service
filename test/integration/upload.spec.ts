@@ -201,5 +201,24 @@ describe('Upload service', function () {
         expect(e.statusCode).to.be.eql(422)
       }
     })
+    it('should throw on size limit', async () => {
+      const originalSizeLimit = config.get('fileSizeLimit')
+      // @ts-ignore
+      config.fileSizeLimit = 1
+      await testApp.stop()
+      await testApp.initAndStart()
+
+      try {
+        await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, './test/integration/files/testFile.txt')
+      } catch (e) {
+        expect(e.error.message).to.be.eql('File too large')
+      }
+
+      // @ts-ignore
+      config.fileSizeLimit = originalSizeLimit
+      await testApp.stop()
+      await testApp.initAndStart()
+      await sleep(1000)
+    })
   })
 })

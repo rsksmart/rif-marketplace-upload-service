@@ -43,6 +43,9 @@ export interface Config {
     jobTtl?: number
   }
 
+  // In bytes
+  fileSizeLimit?: number
+
   log?: {
     level?: string
     filter?: string

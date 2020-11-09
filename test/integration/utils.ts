@@ -1,5 +1,6 @@
 import config from 'config'
 import { promises as fs } from 'fs'
+import { Server } from 'http'
 import { CID, IpfsClient } from 'ipfs-http-client'
 import path from 'path'
 import { Sequelize } from 'sequelize'
@@ -9,10 +10,12 @@ import { loggingFactory } from '../../src/logger'
 import { appFactory } from '../../src/app'
 import { sequelizeFactory } from '../../src/sequelize'
 import { Application } from '../../src/definitions'
+import { sleep } from '../utils'
 
 export class TestingApp {
   private readonly logger = loggingFactory('test:test-app')
   public sequelize: Sequelize | undefined
+  public server: undefined | Server
   public app: { stop: () => void, app: Application } | undefined
   public peerId: PeerId.JSONPeerId | undefined
   public providerAddress = '0xiopqndsaProviderAddress'
@@ -44,10 +47,10 @@ export class TestingApp {
 
     // Start server
     const port = config.get('port')
-    const server = this.app.app.listen(port)
+    this.server = this.app.app.listen(port)
     this.logger.info('Cache service started')
 
-    server.on('listening', () =>
+    this.server.on('listening', () =>
       this.logger.info(`Server started on port ${port}`)
     )
 
@@ -58,13 +61,14 @@ export class TestingApp {
 
   async stop (): Promise<void> {
     if (this.app) {
-      this.app.stop()
+      await this.app.stop()
     }
 
-    await this.sequelize?.close()
+    this.server?.close()
 
     this.sequelize = undefined
     this.app = undefined
+    await sleep(1000)
   }
 
   private async purgeDb (): Promise<void> {
