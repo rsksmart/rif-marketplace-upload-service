@@ -13,6 +13,7 @@
     interval: '1h'
   },
 
+  fileSizeLimit: 1073741824, // 1 gb in bytes
   // ipfs
   ipfs: {
     clientOptions: {

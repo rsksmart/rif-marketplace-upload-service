@@ -1,6 +1,7 @@
 import * as fs from 'fs'
 import multer from 'multer'
 import path from 'path'
+import config from 'config'
 
 import { Application, UploadService, ServiceAddresses } from '../definitions'
 import { loggingFactory } from '../logger'
@@ -21,7 +22,11 @@ const storage = multer.diskStorage({
   }
 })
 
-const uploadMiddleware = multer({ storage })
+const limits = {
+  fileSize: config.get<number>('fileSizeLimit')
+}
+
+const uploadMiddleware = multer({ storage, limits })
 
 const upload: UploadService = {
   async initialize (app: Application): Promise<{ stop: () => Promise<void> }> {
