@@ -22,14 +22,14 @@ const storage = multer.diskStorage({
   }
 })
 
-const limits = {
-  fileSize: config.get<number>('fileSizeLimit')
-}
-
-const uploadMiddleware = multer({ storage, limits })
-
 const upload: UploadService = {
   async initialize (app: Application): Promise<{ stop: () => Promise<void> }> {
+    const limits = {
+      fileSize: config.get<number>('fileSizeLimit')
+    }
+
+    const uploadMiddleware = multer({ storage, limits })
+
     await waitForReadyApp(app)
 
     const libp2p = app.get('libp2p')
