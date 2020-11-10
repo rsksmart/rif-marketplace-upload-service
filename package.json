@@ -18,9 +18,9 @@
   "files": [
     "/oclif.manifest.json",
     "/lib",
-    "/config/default.json5",
-    "/config/custom-environment-variables.json5",
-    "/bin"
+    "/config",
+    "/bin",
+    "types"
   ],
   "directories": {
     "lib": "src",
