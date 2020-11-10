@@ -10,7 +10,6 @@ import { ProviderManager } from './providers'
 import UploadJob from './upload/upload.model'
 
 const logger = loggingFactory('jobs:gc')
-const NOT_PINNED_ERROR_MSG = 'not pinned or pinned indirectly'
 
 export async function gcFiles (storageProvider: ProviderManager): Promise<void> {
   let jobsTtl
