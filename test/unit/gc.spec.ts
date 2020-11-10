@@ -17,14 +17,15 @@ chai.use(dirtyChai)
 const expect = chai.expect
 
 describe('GC', function () {
-  this.timeout(10000)
+  this.timeout(500)
   const jobTtl = config.get('gc.jobTtl')
   const leaveRoomSpy = sinon.spy()
   const providerRmSpy = sinon.spy()
   let provider: ProviderManager
 
-  before(() => {
-    sequelizeFactory()
+  before(async () => {
+    const sequelize = sequelizeFactory()
+    await sequelize.sync({ force: true })
     sinon.stub(ProviderManager.prototype, 'rm').callsFake((hash: string) => {
       providerRmSpy(hash)
       return Promise.resolve()
@@ -58,7 +59,7 @@ describe('GC', function () {
   })
   it('should remove expired jobs', async () => {
     // @ts-ignore
-    config.gc.jobTtl = '5s'
+    config.gc.jobTtl = '100ms'
 
     rooms.set(getRoomTopic('test'), { room: {} as PubSubRoom, peerId: 'testPeer' })
 
@@ -70,7 +71,7 @@ describe('GC', function () {
     expect(jobs.length).to.be.eql(3)
     expect(rooms.size).to.be.eql(1)
 
-    await sleep(8000)
+    await sleep(150)
 
     await gcFiles(provider)
 

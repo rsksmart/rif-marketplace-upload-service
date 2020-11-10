@@ -100,9 +100,9 @@ describe('Upload service', function () {
       gcInterval = config.get<string>('gc.interval')
       jobTtl = config.get<string>('gc.jobTtl')
       // @ts-ignore
-      config.gc.interval = '5s'
+      config.gc.interval = '500ms'
       // @ts-ignore
-      config.gc.jobTtl = '1s'
+      config.gc.jobTtl = '500ms'
       gc = jobsGC(testApp.app!.app)
     })
     after(() => {
@@ -140,7 +140,7 @@ describe('Upload service', function () {
       expect(await isPinned(ipfs, new CID(file3Response.fileHash))).to.be.true()
       expect(job3).to.be.instanceOf(UploadJob)
 
-      await sleep(7000)
+      await sleep(1000)
 
       expect(await isPinned(ipfs, new CID(file1Response.fileHash))).to.be.eql(false)
       expect(await isPinned(ipfs, new CID(file2Response.fileHash))).to.be.eql(false)
