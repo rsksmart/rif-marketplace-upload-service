@@ -1,4 +1,12 @@
-import ipfsClient, { CID, ClientOptions, IpfsClient, IpfsResult, Version } from 'ipfs-http-client'
+import ipfsClient, {
+  CID,
+  ClientOptions,
+  IpfsClient,
+  IpfsObject,
+  IpfsResult,
+  RegularFiles,
+  Version
+} from 'ipfs-http-client'
 import * as semver from 'semver'
 
 import type { Provider } from '../definitions'
@@ -50,10 +58,11 @@ export class IpfsProvider implements Provider {
   /**
    * Upload file to IPFS
    * @param data
+   * @param options
    * @return IpfsResult
    */
-  add (data: Buffer): Promise<IpfsResult> {
-    return this.ipfs.add(data)
+  add (data: Buffer | Array<IpfsObject<any>>, options: RegularFiles.AddOptions): Promise<IpfsResult> {
+    return this.ipfs.add(data, options)
   }
 
   /**

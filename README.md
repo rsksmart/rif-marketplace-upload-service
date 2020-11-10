@@ -41,7 +41,8 @@ This api allow you to upload file
 POST: /upload
 
 MultiPartFormData: {
-  file: File,
+  files: File1,
+  files: File2,
   account: string,
   offerId: string,
   peerId: string

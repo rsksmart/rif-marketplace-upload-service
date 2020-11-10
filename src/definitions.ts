@@ -1,6 +1,6 @@
 import { Application as ExpressFeathers } from '@feathersjs/express'
 import * as Parser from '@oclif/parser'
-import { ClientOptions as IpfsOptions, IpfsResult } from 'ipfs-http-client'
+import { ClientOptions as IpfsOptions, IpfsResult, RegularFiles } from 'ipfs-http-client'
 import type { Options as Libp2pOptions } from 'libp2p'
 
 export enum SupportedServices {
@@ -143,7 +143,7 @@ export type MessageHandler = (message: CommsMessage<CommsPayloads>) => Promise<v
 // Storage Provider
 
 export interface Provider {
-  add (data: Buffer): Promise<IpfsResult>
+  add (data: Buffer, options: RegularFiles.AddOptions): Promise<IpfsResult>
   rm (hash: string): void
 }
 

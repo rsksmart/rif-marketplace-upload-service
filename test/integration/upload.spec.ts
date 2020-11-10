@@ -23,12 +23,13 @@ import { isPinned, TestingApp } from './utils'
 chai.use(dirtyChai)
 const expect = chai.expect
 
-function upload (provider: string, account: string, peerId: string, filePath?: string): Promise<any> {
+function upload (provider: string, account: string, peerId: string, filesPath?: string[]): Promise<any> {
   const form = new FormData()
 
-  if (filePath) {
-    const file = fs.createReadStream(path.resolve(process.cwd(), filePath))
-    form.append('file', file)
+  if (filesPath) {
+    filesPath.map((filePath, i) =>
+      form.append('files', fs.createReadStream(path.resolve(process.cwd(), filePath)))
+    )
   }
   form.append('offerId', provider)
   form.append('peerId', peerId)
@@ -115,25 +116,25 @@ describe('Upload service', function () {
       await UploadJob.destroy({ where: {} })
     })
     it('should remove and unpin expired files', async () => {
-      const file1Response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, './test/integration/files/testFile.txt')
-      const file2Response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, './test/integration/files/testFile2.txt')
-      const file3Response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, './test/integration/files/testFile3.txt')
+      const file1Response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/testFile.txt'])
+      const file2Response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/testFile2.txt'])
+      const file3Response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/testFile3.txt'])
 
       expect(rooms.size).to.be.eql(1)
 
-      expect(file1Response.message).to.be.eql('File uploaded')
+      expect(file1Response.message).to.be.eql('Files uploaded')
       expect(file1Response.fileHash).to.be.not.null()
       const job1 = await UploadJob.findOne({ where: { fileHash: `/ipfs/${file1Response.fileHash}` } })
       expect(await isPinned(ipfs, new CID(file1Response.fileHash))).to.be.true()
       expect(job1).to.be.instanceOf(UploadJob)
 
-      expect(file2Response.message).to.be.eql('File uploaded')
+      expect(file2Response.message).to.be.eql('Files uploaded')
       expect(file2Response.fileHash).to.be.not.null()
       const job2 = await UploadJob.findOne({ where: { fileHash: `/ipfs/${file2Response.fileHash}` } })
       expect(await isPinned(ipfs, new CID(file2Response.fileHash))).to.be.true()
       expect(job2).to.be.instanceOf(UploadJob)
 
-      expect(file3Response.message).to.be.eql('File uploaded')
+      expect(file3Response.message).to.be.eql('Files uploaded')
       expect(file3Response.fileHash).to.be.not.null()
       const job3 = await UploadJob.findOne({ where: { fileHash: `/ipfs/${file3Response.fileHash}` } })
       expect(await isPinned(ipfs, new CID(file3Response.fileHash))).to.be.true()
@@ -153,8 +154,8 @@ describe('Upload service', function () {
       await UploadJob.destroy({ where: { } })
     })
     it('should upload file', async () => {
-      const response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, './test/integration/files/testFile.txt')
-      expect(response.message).to.be.eql('File uploaded')
+      const response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/testFile.txt'])
+      expect(response.message).to.be.eql('Files uploaded')
       expect(response.fileHash).to.be.not.null()
       const jobs = await UploadJob.findAll()
       expect(jobs.length).to.be.eql(1)
@@ -168,8 +169,8 @@ describe('Upload service', function () {
       await ipfs.pin.rm(new CID(response.fileHash))
     })
     it('should upload file and unpin when receive pinned message', async () => {
-      const response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, './test/integration/files/testFile.txt')
-      expect(response.message).to.be.eql('File uploaded')
+      const response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/testFile.txt'])
+      expect(response.message).to.be.eql('Files uploaded')
       expect(response.fileHash).to.be.not.null()
       const jobs = await UploadJob.findAll()
       expect(jobs.length).to.be.eql(1)
@@ -209,7 +210,7 @@ describe('Upload service', function () {
       await testApp.initAndStart()
 
       try {
-        await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, './test/integration/files/testFile.txt')
+        await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/testFile.txt'])
       } catch (e) {
         expect(e.error.message).to.be.eql('File too large')
       }
