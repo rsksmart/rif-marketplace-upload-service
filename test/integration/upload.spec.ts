@@ -100,7 +100,7 @@ describe('Upload service', function () {
       gcInterval = config.get<string>('gc.interval')
       jobTtl = config.get<string>('gc.jobTtl')
       // @ts-ignore
-      config.gc.interval = '500ms'
+      config.gc.interval = '1000ms'
       // @ts-ignore
       config.gc.jobTtl = '500ms'
       gc = jobsGC(testApp.app!.app)
