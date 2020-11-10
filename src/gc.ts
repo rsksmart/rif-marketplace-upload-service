@@ -4,6 +4,7 @@ import parse from 'parse-duration'
 
 import { leaveRoom, rooms } from './communication'
 import { Application } from './definitions'
+import { NotPinnedError } from './errors'
 import { loggingFactory } from './logger'
 import { ProviderManager } from './providers'
 import UploadJob from './upload/upload.model'
@@ -26,7 +27,13 @@ export async function gcFiles (storageProvider: ProviderManager): Promise<void> 
 
   // Unpin file and remove expired jobs
   for (const job of jobsToRemove) {
-    await storageProvider.rm(job.fileHash).catch(e => logger.error(e))
+    await storageProvider.rm(job.fileHash).catch(e => {
+      // If file already unpinned ignore error and remove job from db
+      if (e instanceof NotPinnedError) {
+        return
+      }
+      throw e
+    })
     await job.destroy()
     logger.info(`Expired job ${job.id} file hash ${job.fileHash} is unpined and removed`)
   }

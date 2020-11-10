@@ -57,7 +57,7 @@ export function subscribeForOffer (
 
     roomLogger.debug(`Receive message: ${JSON.stringify(message)}`)
 
-    if (from !== peerId) {
+    if (from !== rooms.get(topic)?.peerId) {
       return
     }
 

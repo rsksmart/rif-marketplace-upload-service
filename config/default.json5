@@ -13,11 +13,13 @@
     interval: '1h'
   },
 
+  fileSizeLimit: 1073741824, // 1 gb in bytes
+
   // ipfs
   ipfs: {
     clientOptions: {
       // The default value for go-ipfs
-      url: 'http://localhost:5002',
+      url: 'http://localhost:5001',
     }
   },
 

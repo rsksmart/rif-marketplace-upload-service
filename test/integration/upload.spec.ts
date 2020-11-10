@@ -99,9 +99,9 @@ describe('Upload service', function () {
       gcInterval = config.get<string>('gc.interval')
       jobTtl = config.get<string>('gc.jobTtl')
       // @ts-ignore
-      config.gc.interval = '5s'
+      config.gc.interval = '500ms'
       // @ts-ignore
-      config.gc.jobTtl = '1s'
+      config.gc.jobTtl = '500ms'
       gc = jobsGC(testApp.app!.app)
     })
     after(() => {
@@ -139,7 +139,7 @@ describe('Upload service', function () {
       expect(await isPinned(ipfs, new CID(file3Response.fileHash))).to.be.true()
       expect(job3).to.be.instanceOf(UploadJob)
 
-      await sleep(7000)
+      await sleep(1000)
 
       expect(await isPinned(ipfs, new CID(file1Response.fileHash))).to.be.eql(false)
       expect(await isPinned(ipfs, new CID(file2Response.fileHash))).to.be.eql(false)
@@ -200,6 +200,25 @@ describe('Upload service', function () {
         expect(e.error.error).to.be.eql('File needs to be provided.')
         expect(e.statusCode).to.be.eql(422)
       }
+    })
+    it('should throw on size limit', async () => {
+      const originalSizeLimit = config.get('fileSizeLimit')
+      // @ts-ignore
+      config.fileSizeLimit = 1
+      await testApp.stop()
+      await testApp.initAndStart()
+
+      try {
+        await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, './test/integration/files/testFile.txt')
+      } catch (e) {
+        expect(e.error.message).to.be.eql('File too large')
+      }
+
+      // @ts-ignore
+      config.fileSizeLimit = originalSizeLimit
+      await testApp.stop()
+      await testApp.initAndStart()
+      await sleep(1000)
     })
   })
 })

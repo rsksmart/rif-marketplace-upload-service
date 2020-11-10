@@ -7,7 +7,7 @@ import fs from 'fs'
 import {
   Application,
   Config,
-  Logger,
+  Logger
 } from './definitions'
 
 const readFile = promisify(fs.readFile)
@@ -28,7 +28,6 @@ export function duplicateObject<T> (obj: T): T {
   return JSON.parse(JSON.stringify(obj))
 }
 
-
 /**
  * General handler closure function mainly for Event Emitters, which in case of rejected promise logs the rejection
  * using given logger.
@@ -41,6 +40,7 @@ export function errorHandler (fn: (...args: any[]) => Promise<any>, logger: Logg
   return (...args) => {
     return fn(...args).catch(err => {
       logger.error(err)
+
       if (exitOnError) {
         process.exit()
       }
