@@ -1,5 +1,6 @@
 import config from 'config'
 import { IpfsResult, Version } from 'ipfs-http-client'
+import { Readable } from 'stream'
 
 import { Application, Provider } from '../definitions'
 import { loggingFactory } from '../logger'
@@ -37,7 +38,7 @@ export class ProviderManager implements Provider {
     }
   }
 
-  public async add (data: Buffer): Promise<IpfsResult> {
+  public async add (data: Buffer | Readable): Promise<IpfsResult> {
     if (!this.ipfs) {
       throw new Error('IPFS provider was not registered!')
     }

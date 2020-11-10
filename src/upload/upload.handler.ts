@@ -32,8 +32,8 @@ export default function (storageProvider: ProviderManager, libp2p: Libp2p): Uplo
     logger.info('Job created')
 
     // Read file from fs and start uploading to storage
-    const data = await fs.promises.readFile(req.file.path)
-    const { cid } = await storageProvider.add(data)
+    const fileReadStream = fs.createReadStream(req.file.path)
+    const { cid } = await storageProvider.add(fileReadStream)
     logger.info(`File ${req.file.filename} uploaded to IPFS, file hash ${cid.toString()}`)
 
     // Unlink file from fs

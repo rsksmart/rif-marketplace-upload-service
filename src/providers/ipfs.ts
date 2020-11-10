@@ -1,5 +1,6 @@
 import ipfsClient, { CID, ClientOptions, IpfsClient, IpfsResult, Version } from 'ipfs-http-client'
 import * as semver from 'semver'
+import { Readable } from 'stream'
 
 import type { Provider } from '../definitions'
 import { NotPinnedError } from '../errors'
@@ -52,7 +53,7 @@ export class IpfsProvider implements Provider {
    * @param data
    * @return IpfsResult
    */
-  add (data: Buffer): Promise<IpfsResult> {
+  add (data: Buffer | Readable): Promise<IpfsResult> {
     return this.ipfs.add(data)
   }
 
