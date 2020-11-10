@@ -22,4 +22,3 @@ export class NotPinnedError extends ProviderError {
     this.code = NotPinnedError.code
   }
 }
-

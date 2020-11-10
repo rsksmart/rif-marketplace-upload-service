@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 
 if (!process.env.NODE_CONFIG_DIR) {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const path = require('path')
   process.env.NODE_CONFIG_DIR = path.join(__dirname, '..', 'config')
 }
 
 require('@oclif/command').run()
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   .then(require('@oclif/command/flush'))
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   .catch(require('@oclif/errors/handle'))
