@@ -99,19 +99,17 @@ $ npm install -g @rsksmart/rif-marketplace-upload-service
 $ export RIFMUS_DB=myDbDile.sqlite
 
 // Sync the schema of database
-$ rif-storage-upload-service db-sync
+$ rif-marketplace-upload-service db-sync
 
 // Start the server
-$ rif-storage-upload-service start --port 8000
+$ rif-marketplace-upload-service start --port 8000
 ```
-
-For some more details on how to deploy this server please see [Deployment guide](./DEPLOYMENT.md).
 
 ### Commands
 <!-- commands -->
-* [`rif-storage-upload-service db-sync`](#rif-storage-upload-service-db-sync)
-* [`rif-storage-upload-service purge [SERVICE]`](#rif-storage-upload-service-purge)
-* [`rif-storage-upload-service start`](#rif-storage-upload-service-start)
+* [`rif-marketplace-upload-service db-sync`](#rif-marketplace-upload-service-db-sync)
+* [`rif-marketplace-upload-service purge [SERVICE]`](#rif-marketplace-upload-service-purge)
+* [`rif-marketplace-upload-service start`](#rif-marketplace-upload-service-start)
 
 #### `rif-marketplace-cache db-sync`
 
@@ -119,7 +117,7 @@ synchronize database schema
 
 ```
 USAGE
-  $ rif-storage-upload-service db-sync
+  $ rif-marketplace-upload-service db-sync
 
 OPTIONS
   --config=config                      path to JSON config file to load
@@ -132,13 +130,13 @@ OPTIONS
 ```
 
 
-#### `rif-storage-upload-service purge`
+#### `rif-marketplace-upload-service purge`
 
 purge cached data
 
 ```
 USAGE
-  $ rif-storage-upload-service purge
+  $ rif-marketplace-upload-service purge
 
 OPTIONS
   --config=config                      path to JSON config file to load
@@ -147,16 +145,16 @@ OPTIONS
   --log-path=log-path                  log to file, default is STDOUT
 
 EXAMPLE
-  $ rif-storage-upload-service purge
+  $ rif-marketplace-upload-service purge
 ```
 
-#### `rif-storage-upload-service start`
+#### `rif-marketplace-upload-service start`
 
 start the upload service
 
 ```
 USAGE
-  $ rif-storage-upload-service start
+  $ rif-marketplace-upload-service start
 
 OPTIONS
   -p, --port=port                      port to attach the server to
@@ -167,7 +165,7 @@ OPTIONS
   --log-path=log-path                  log to file, default is STDOUT
 
 EXAMPLE
-  $ rif-storage-upload-service start
+  $ rif-marketplace-upload-service start
 ```
 <!-- commandsstop -->
 
