@@ -23,8 +23,9 @@ describe('GC', function () {
   const providerRmSpy = sinon.spy()
   let provider: ProviderManager
 
-  before(() => {
-    sequelizeFactory()
+  before(async () => {
+    const sequelize = sequelizeFactory()
+    await sequelize.sync({ force: true })
     sinon.stub(ProviderManager.prototype, 'rm').callsFake((hash: string) => {
       providerRmSpy(hash)
       return Promise.resolve()
