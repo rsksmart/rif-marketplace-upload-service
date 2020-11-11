@@ -61,7 +61,7 @@ describe('GC', function () {
     // @ts-ignore
     config.gc.jobTtl = '100ms'
 
-    rooms.set(getRoomTopic('test'), { room: {} as PubSubRoom, peerId: 'testPeer' })
+    rooms.set(getRoomTopic('test', 'test'), { room: {} as PubSubRoom, peerId: 'testPeer' })
 
     const jobs = await UploadJob.bulkCreate([
       { offerId: 'test', account: 'testAcc', fileHash: 'file1', peerId: 'testPeer', status: UploadJobStatus.WAITING_FOR_PINNING },
@@ -80,7 +80,7 @@ describe('GC', function () {
     expect(providerRmSpy.calledOnceWith(jobs[1].fileHash))
     expect(providerRmSpy.calledOnceWith(jobs[2].fileHash))
     expect(providerRmSpy.calledOnceWith(jobs[2].fileHash))
-    expect(leaveRoomSpy.calledWith(getRoomTopic('test')))
+    expect(leaveRoomSpy.calledWith(getRoomTopic('test', 'test')))
 
     // @ts-ignore
     config.gc.jobTtl = jobTtl

@@ -40,8 +40,8 @@ export async function gcFiles (storageProvider: ProviderManager): Promise<void> 
 
   // Leave rooms for no jobs offers
   for (const [topic] of rooms) {
-    const offerId = topic.split(':')[1]
-    const jobsForOffer = await UploadJob.count({ where: { offerId } })
+    const [, contractAddress, offerId] = topic.split(':')
+    const jobsForOffer = await UploadJob.count({ where: { offerId, contractAddress } })
 
     if (!jobsForOffer) {
       leaveRoom(topic)

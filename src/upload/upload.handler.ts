@@ -20,7 +20,14 @@ async function unlinkFiles (files: any[]): Promise<void> {
 
 export default function (storageProvider: ProviderManager, libp2p: Libp2p): UploadRouteHandler {
   return async (req: any, res: any): Promise<void> => {
-    const { offerId, peerId, account } = req.body
+    const { offerId, peerId, account, contractAddress } = req.body
+    const missedParams = ['offerId', 'peerId', 'account', 'contractAddress'].filter(k => req.body[k])
+
+    if (!missedParams.length) {
+      return res.status(422).json({
+        error: `Params ${missedParams} required`
+      })
+    }
 
     if (!req.files || !req.files.length) {
       return res.status(422).json({
@@ -35,6 +42,7 @@ export default function (storageProvider: ProviderManager, libp2p: Libp2p): Uplo
       offerId,
       peerId,
       account,
+      contractAddress,
       meta: { files: req.files.map((f: any) => f.originalname) },
       status: UploadJobStatus.UPLOADING
     })
@@ -59,7 +67,7 @@ export default function (storageProvider: ProviderManager, libp2p: Libp2p): Uplo
     await job.save()
 
     // Register room
-    await subscribeForOffer(libp2p, storageProvider, offerId, peerId)
+    await subscribeForOffer(libp2p, storageProvider, offerId, peerId, contractAddress)
 
     return res.json({
       message: 'Files uploaded',

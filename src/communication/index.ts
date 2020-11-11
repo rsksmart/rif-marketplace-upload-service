@@ -14,8 +14,8 @@ const logger = loggingFactory('communication')
 // (offerId -> { room, peerId }) MAP
 export const rooms = new Map<string, { room: Room, peerId: string }>()
 
-export function getRoomTopic (offerId: string): string {
-  return `${config.get<number>('networkId')}:${offerId}`
+export function getRoomTopic (offerId: string, contractAddress: string): string {
+  return `${config.get<number>('networkId')}:${contractAddress}:${offerId}`
 }
 
 export function leaveRoom (topic: string): void {
@@ -27,12 +27,13 @@ export function subscribeForOffer (
   libp2p: Libp2p,
   storageProvider: ProviderManager,
   offerId: string,
-  peerId: string
+  peerId: string,
+  contractAddress: string
 ): void {
   if (!libp2p) {
     throw new Error('Libp2p not initialized')
   }
-  const topic = getRoomTopic(offerId)
+  const topic = getRoomTopic(offerId, contractAddress)
 
   // Check if room already existed
   if (rooms.has(topic)) {
@@ -44,7 +45,7 @@ export function subscribeForOffer (
   }
 
   const roomLogger = loggingFactory(`communication:room:${topic}`)
-  const handler = errorHandler(messageHandler(offerId, storageProvider, roomLogger), roomLogger)
+  const handler = errorHandler(messageHandler(offerId, contractAddress, storageProvider, roomLogger), roomLogger)
   const room = new Room(libp2p, topic)
   rooms.set(topic, { room, peerId }) // store room to be able to leave the channel when offer is terminated
   roomLogger.info(`Created room for topic: ${topic}`)

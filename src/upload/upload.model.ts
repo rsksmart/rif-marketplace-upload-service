@@ -15,6 +15,9 @@ export default class UploadJob extends Model {
   fileHash!: string
 
   @Column
+  contractAddress!: string
+
+  @Column
   peerId!: string
 
   @Column({ allowNull: false })
