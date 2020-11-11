@@ -44,7 +44,7 @@ const upload: UploadService = {
     // Init upload route
     app.post(
       ServiceAddresses.Upload,
-      uploadMiddleware.single('file'),
+      uploadMiddleware.array('files'),
       errorHandler(uploadHandler(providerManager, libp2p), logger)
     )
 

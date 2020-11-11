@@ -10,10 +10,10 @@ const logger = loggingFactory('cli:start')
 
 export default class StartServer extends BaseCLICommand {
   static get description () {
-    return 'start the caching server'
+    return 'Strat upload server'
   }
 
-  static examples = ['$ rif-storage-upload-service start']
+  static examples = ['$ rif-marketplace-upload-service start']
 
   static flags = {
     ...BaseCLICommand.flags,

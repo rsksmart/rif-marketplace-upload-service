@@ -8,6 +8,7 @@
       url: 'http://localhost:5002',
     }
   },
+  fileSizeLimit: 5000,
   comms: {
     libp2p: {
       config: {

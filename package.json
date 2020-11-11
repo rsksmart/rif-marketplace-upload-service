@@ -1,14 +1,14 @@
 {
-  "name": "@rsksmart/rif-storage-upload-service",
+  "name": "@rsksmart/rif-marketplace-upload-service",
   "version": "0.0.1",
   "description": "Service for Uploading files to Storage Providers(IPFS, Swarm, ...)",
   "keywords": [
     "RIF",
     "RSK"
   ],
-  "homepage": "https://github.com/rsksmart/rif-storage-upload-service",
+  "homepage": "https://github.com/rsksmart/rif-marketplace-upload-service",
   "bugs": {
-    "url": "https://github.com/rsksmart/rif-storage-upload-service/issues/"
+    "url": "https://github.com/rsksmart/rif-marketplace-upload-service/issues/"
   },
   "license": "MIT",
   "author": {
@@ -18,9 +18,9 @@
   "files": [
     "/oclif.manifest.json",
     "/lib",
-    "/config/default.json5",
-    "/config/custom-environment-variables.json5",
-    "/bin"
+    "/config",
+    "/bin",
+    "types"
   ],
   "directories": {
     "lib": "src",
@@ -29,7 +29,7 @@
   },
   "main": "lib/index.js",
   "bin": {
-    "rif-storage-upload-service": "./bin/run"
+    "rif-marketplace-upload-service": "./bin/run"
   },
   "repository": {
     "type": "git",
@@ -123,7 +123,7 @@
   ],
   "oclif": {
     "commands": "./src/cli",
-    "bin": "rif-storage-upload-service",
+    "bin": "rif-marketplace-upload-service",
     "plugins": [
       "@oclif/plugin-help"
     ]

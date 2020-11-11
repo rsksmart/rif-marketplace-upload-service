@@ -9,7 +9,7 @@ export default class Purge extends BaseCLICommand {
     return 'purge cached data'
   }
 
-  static examples = ['$ rif-storage-upload-service purge']
+  static examples = ['$ rif-marketplace-upload-service purge']
 
   static flags = BaseCLICommand.flags
 
