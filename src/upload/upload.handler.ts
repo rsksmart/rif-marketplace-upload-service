@@ -1,5 +1,7 @@
 import fs from 'fs'
+import path from 'path'
 import Libp2p from 'libp2p'
+
 import { subscribeForOffer } from '../communication'
 import { UploadJobStatus } from '../definitions'
 import { loggingFactory } from '../logger'
@@ -9,36 +11,47 @@ import UploadJob from './upload.model'
 const logger = loggingFactory('upload.handler')
 type UploadRouteHandler = (req: any, res: any) => Promise<void>
 
+async function unlinkFiles (files: any[]): Promise<void> {
+  for (const file of files) {
+    await fs.promises.unlink(file.path)
+    logger.info(`File ${file.filename} removed from fs`)
+  }
+}
+
 export default function (storageProvider: ProviderManager, libp2p: Libp2p): UploadRouteHandler {
   return async (req: any, res: any): Promise<void> => {
     const { offerId, peerId, account } = req.body
 
-    if (!req.file) {
+    if (!req.files || !req.files.length) {
       return res.status(422).json({
         error: 'File needs to be provided.'
       })
     }
 
-    logger.info(`Receive file ${req.file.filename} for offer ${offerId}, peerId ${peerId}`)
+    logger.info(`Receive files ${req.files.map((f: any) => f.filename)} for offer ${offerId}, peerId ${peerId}`)
 
     // Create upload job
     const job = await UploadJob.create({
       offerId,
       peerId,
       account,
-      meta: { filename: req.file.originalname },
+      meta: { files: req.files.map((f: any) => f.originalname) },
       status: UploadJobStatus.UPLOADING
     })
     logger.info('Job created')
 
-    // Read file from fs and start uploading to storage
-    const data = await fs.promises.readFile(req.file.path)
-    const { cid } = await storageProvider.add(data)
-    logger.info(`File ${req.file.filename} uploaded to IPFS, file hash ${cid.toString()}`)
+    // Read files from fs and start uploading to storage
+    const files = req.files.map((file: any) => {
+      return {
+        path: path.resolve('/', file.filename),
+        content: fs.createReadStream(file.path)
+      }
+    })
+    const { cid } = await storageProvider.add(files, { wrapWithDirectory: true })
+    logger.info(`Files uploaded to IPFS, file hash ${cid.toString()}`)
 
-    // Unlink file from fs
-    await fs.promises.unlink(req.file.path)
-    logger.info(`File ${req.file.filename} removed from fs`)
+    // Unlink files from fs
+    await unlinkFiles(req.files)
 
     // Update job
     job.fileHash = `/ipfs/${cid.toString()}`
@@ -49,7 +62,7 @@ export default function (storageProvider: ProviderManager, libp2p: Libp2p): Uplo
     await subscribeForOffer(libp2p, storageProvider, offerId, peerId)
 
     return res.json({
-      message: 'File uploaded',
+      message: 'Files uploaded',
       fileHash: cid.toString()
     })
   }
