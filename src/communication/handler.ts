@@ -38,6 +38,14 @@ async function hashPinnedHandler (
     await storageProvider?.rm(job.fileHash)
     roomLogger.info(`File ${job.fileHash} for offer ${job.offerId} unpinned`)
   }
+
+  // Leave room if not active jobs for that offer
+  const pendingJobsForOffer = await UploadJob.count({ where: { offerId } })
+
+  if (!pendingJobsForOffer) {
+    roomLogger.info('Leaving room')
+    leaveRoom(getRoomTopic(offerId))
+  }
 }
 
 export function messageHandler (
