@@ -20,7 +20,8 @@ async function hashPinnedHandler (
     {
       where: {
         fileHash,
-        offerId
+        offerId,
+        contractAddress
       }
     }
   )
@@ -41,7 +42,7 @@ async function hashPinnedHandler (
   }
 
   // Leave room if not active jobs for that offer
-  const pendingJobsForOffer = await UploadJob.count({ where: { offerId } })
+  const pendingJobsForOffer = await UploadJob.count({ where: { offerId, contractAddress } })
 
   if (!pendingJobsForOffer) {
     roomLogger.info('Leaving room')
