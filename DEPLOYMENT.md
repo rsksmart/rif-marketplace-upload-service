@@ -33,7 +33,7 @@ $ docker run -v <path-to-the-config>:/srv/app/config/local.json5 -id rif-marketp
 
 #### 1. Install
 
-Install the Cache's NPM package
+Install the Upload service NPM package
 
 ```
 npm install -g @rsksmart/rif-marketplace-upload-service
