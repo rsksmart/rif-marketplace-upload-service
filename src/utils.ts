@@ -53,8 +53,8 @@ export function errorHandler (fn: (...args: any[]) => Promise<any>, logger: Logg
  * @param app
  */
 export async function waitForReadyApp (app: Application): Promise<void> {
-  await app.get('sequelizeSync')
   await app.get('initComms')
+  await app.get('sequelizeInit')
   await app.get('ipfsInit')
 }
 
