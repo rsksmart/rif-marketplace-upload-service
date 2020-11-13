@@ -10,6 +10,27 @@
     }
   },
 
+  comms: {
+    libp2p: {
+      addresses: {
+        listen: {
+          "__name": "RIFS_COMMS_LISTEN",
+          "__format": "json"
+        }
+      },
+      config: {
+        peerDiscovery: {
+          bootstrap: {
+            list: {
+              "__name": "RIFS_COMMS_BOOTSTRAP",
+              "__format": "json"
+            }
+          }
+        }
+      }
+    },
+  },
+
   cors: {
     origin: "RIFMUS_CORS_ORIGIN",
     methods: "RIFMUS_CORS_METHODS"

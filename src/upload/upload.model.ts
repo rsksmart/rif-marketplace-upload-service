@@ -14,10 +14,10 @@ export default class UploadJob extends Model {
   @Column
   fileHash!: string
 
-  @Column
+  @Column({ allowNull: false })
   contractAddress!: string
 
-  @Column
+  @Column({ allowNull: false })
   peerId!: string
 
   @Column({ allowNull: false })

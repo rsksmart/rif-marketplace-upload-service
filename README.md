@@ -10,9 +10,15 @@
 ![](https://img.shields.io/badge/npm-%3E%3D6.0.0-orange.svg?style=flat-square)
 ![](https://img.shields.io/badge/Node.js-%3E%3D10.0.0-orange.svg?style=flat-square)
 
-> Service that allow to upload file to IPFS 
+> Service that allow to upload file to IPFS
 
 **Warning: This project is in alpha state. There might (and most probably will) be changes in the future to its API and working. Also, no guarantees can be made about its stability, efficiency, and security at this stage.**
+
+## Lead Maintainer
+
+[Nazar Duchak](https://github.com/nduchak)
+
+See what "Lead Maintainer" means [here](https://github.com/rsksmart/lead-maintainer).
 
 ## Table of Contents
 
@@ -31,7 +37,7 @@ It is build using [FeathersJS](https://www.feathersjs.com)
 
 ## API
 
-### Upload 
+### Upload
 
 This api allow you to upload file
 
@@ -72,7 +78,7 @@ To run this upload service there is minimum configuration needed, which is suppo
  - Database connection
  - Storage provider connection (IPFS)
  - Libp2p bootstrap nodes list
- 
+
 For general overview of complete configuration options see [Config interface](https://github.com/rsksmart/rif-marketplace-upload-service/blob/master/src/definitions.ts)
 that describe configuration object's properties. If you need advanced configuration you can build your own JSON configuration
 file and load that either using the `--config` CLI parameter or using environment variable `RIFMUS_CONFIG`.
@@ -97,10 +103,10 @@ file and load that either using the `--config` CLI parameter or using environmen
 $ npm install -g @rsksmart/rif-marketplace-upload-service
 
 // Connection to your database
-$ export RIFMUS_DB=myDbDile.sqlite
+$ export RIFMUS_DB=myDbFile.sqlite
 
-// Sync the schema of database
-$ rif-marketplace-upload-service db-sync
+// Database migrations
+$ rif-marketplace-upload-service db-migration --up
 
 // Start the server
 $ rif-marketplace-upload-service start --port 8000
@@ -108,25 +114,38 @@ $ rif-marketplace-upload-service start --port 8000
 
 ### Commands
 <!-- commands -->
-* [`rif-marketplace-upload-service db-sync`](#rif-marketplace-upload-service-db-sync)
+* [`rif-marketplace-upload-service db-migration`](#rif-marketplace-upload-service-db-migration)
 * [`rif-marketplace-upload-service purge [SERVICE]`](#rif-marketplace-upload-service-purge)
 * [`rif-marketplace-upload-service start`](#rif-marketplace-upload-service-start)
 
-#### `rif-marketplace-cache db-sync`
+#### `rif-marketplace-cache db-migration`
 
-synchronize database schema
+migrate database schema
 
 ```
 USAGE
-  $ rif-marketplace-upload-service db-sync
+  $ rif-marketplace-upload-service db-migration
 
 OPTIONS
+  -d, --down                           Undo db migrations
+  -d, --generate=generate              Generate migrations using template [--generate=migration_name]
+  -m, --migration=migration            Migration file
+  -t, --to=to                          Migrate to
+  -u, --up                             Migrate DB
   --config=config                      path to JSON config file to load
   --db=db                              database connection URI
-  --force                              removes all tables and recreates them
-  --log=error|warn|info|verbose|debug  [default: warn] what level of information to log
+  --log=error|warn|info|verbose|debug  [default: info] what level of information to log
   --log-filter=log-filter              what components should be logged (+-, chars allowed)
   --log-path=log-path                  log to file, default is STDOUT
+
+EXAMPLES
+  $ rif-marketplace-upload-service db-migration --up
+  $ rif-marketplace-upload-service db-migration --down
+  $ rif-marketplace-upload-service db-migration --up --to 0-test
+  $ rif-marketplace-upload-service db-migration --up --migrations 01-test --migrations 02-test
+  $ rif-marketplace-upload-service db-migration --up --db ./test.sqlite --to 09-test
+  $ rif-marketplace-upload-service db-migration --down --db ./test.sqlite --to 09-test
+  $ rif-marketplace-upload-service db-migration --generate my_first_migration
 
 ```
 

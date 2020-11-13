@@ -55,14 +55,14 @@ export function messageHandler (
   contractAddress: string,
   storageProvider: ProviderManager,
   roomLogger: Logger
-): (message: CommsMessage<CommsPayloads>) => Promise<void> {
-  return async function (message: CommsMessage<CommsPayloads>): Promise<void> {
+): (message: CommsMessage<CommsPayloads>) => Promise<boolean> {
+  return async function (message: CommsMessage<CommsPayloads>): Promise<boolean> {
     switch (message.code) {
       case MessageCodesEnum.I_HASH_PINNED:
         await hashPinnedHandler(offerId, contractAddress, message as CommsMessage<HashInfoPayload>, storageProvider, roomLogger)
-        break
+        return true
       default:
-        break
+        return false
     }
   }
 }
