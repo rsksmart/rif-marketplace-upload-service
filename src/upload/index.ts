@@ -8,7 +8,6 @@ import { loggingFactory } from '../logger'
 import { errorHandler, waitForReadyApp } from '../utils'
 import UploadJob from './upload.model'
 import uploadHandler from './upload.handler'
-import { sleep } from '../../test/utils'
 
 export const UPLOAD_FOLDER = 'uploads'
 const logger = loggingFactory('upload')
@@ -57,8 +56,6 @@ const upload: UploadService = {
   async purge (): Promise<void> {
     const count = await UploadJob.destroy({ where: {} })
     logger.info(`Removed ${count} upload job entries`)
-
-    await sleep(1000)
   },
 
   precache (): Promise<void> {
