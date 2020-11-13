@@ -3,6 +3,7 @@ import path from 'path'
 import config from 'config'
 import sqlFormatter from 'sql-formatter'
 
+import DbMigration from './migrations/index'
 import { Application } from './definitions'
 import { loggingFactory } from './logger'
 
@@ -32,11 +33,21 @@ export function sequelizeFactory (): Sequelize {
   return new Sequelize(`sqlite:${config.get('db')}`, dbSettings)
 }
 
+async function migrationCheck (sequelize: Sequelize): Promise<void> {
+  const migration = new DbMigration(sequelize)
+
+  if ((await migration.pending()).length) {
+    logger.error('DB Migration required. Please use \'db-migration\' command to proceed')
+    process.exit()
+  }
+}
+
 export default function (app: Application): void {
   const sequelize = sequelizeFactory()
   const oldSetup = app.setup
 
   app.set('sequelize', sequelize)
+  app.set('sequelizeInit', migrationCheck(sequelize))
 
   app.setup = function (...args): ReturnType<Application['setup']> {
     const result = oldSetup.apply(this, args)
@@ -48,8 +59,6 @@ export default function (app: Application): void {
         (models[name] as any).associate(models)
       }
     })
-    // Sync to the database
-    app.set('sequelizeSync', sequelize.sync())
 
     return result
   }
