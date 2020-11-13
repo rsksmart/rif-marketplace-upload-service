@@ -10,9 +10,15 @@
 ![](https://img.shields.io/badge/npm-%3E%3D6.0.0-orange.svg?style=flat-square)
 ![](https://img.shields.io/badge/Node.js-%3E%3D10.0.0-orange.svg?style=flat-square)
 
-> Service that allow to upload file to IPFS 
+> Service that allow to upload file to IPFS
 
 **Warning: This project is in alpha state. There might (and most probably will) be changes in the future to its API and working. Also, no guarantees can be made about its stability, efficiency, and security at this stage.**
+
+## Lead Maintainer
+
+[Nazar Duchak](https://github.com/nduchak)
+
+See what "Lead Maintainer" means [here](https://github.com/rsksmart/lead-maintainer).
 
 ## Table of Contents
 
@@ -31,7 +37,7 @@ It is build using [FeathersJS](https://www.feathersjs.com)
 
 ## API
 
-### Upload 
+### Upload
 
 This api allow you to upload file
 
@@ -71,7 +77,7 @@ To run this upload service there is minimum configuration needed, which is suppo
  - Database connection
  - Storage provider connection (IPFS)
  - Libp2p bootstrap nodes list
- 
+
 For general overview of complete configuration options see [Config interface](https://github.com/rsksmart/rif-marketplace-upload-service/blob/master/src/definitions.ts)
 that describe configuration object's properties. If you need advanced configuration you can build your own JSON configuration
 file and load that either using the `--config` CLI parameter or using environment variable `RIFMUS_CONFIG`.
