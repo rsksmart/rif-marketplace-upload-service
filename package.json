@@ -112,7 +112,7 @@
     "cross-env": "^7.0.2",
     "dirty-chai": "^2.0.1",
     "form-data": "^3.0.0",
-    "sinon": "^9.0.3",
+    "sinon": "^9.2.1",
     "tasegir": "^1.8.0"
   },
   "engines": {
