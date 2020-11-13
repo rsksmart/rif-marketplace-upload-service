@@ -1,26 +1,37 @@
 import { createLibP2P, Message, Room } from '@rsksmart/rif-communications-pubsub'
 import Libp2p from 'libp2p'
 import config from 'config'
+import parse from 'parse-duration'
 import PeerId from 'peer-id'
 
 import { messageHandler } from './handler'
-import { Application, CommsMessage, CommsPayloads } from '../definitions'
+import { Application, CommsMessage, CommsPayloads, Logger } from '../definitions'
 import { loggingFactory } from '../logger'
 import { ProviderManager } from '../providers'
 import { errorHandler } from '../utils'
 
 const logger = loggingFactory('communication')
 
-// (offerId -> { room, peerId }) MAP
-export const rooms = new Map<string, { room: Room, peerId: string }>()
+// (offerId -> room) MAP
+export const rooms = new Map<string, Room>()
 
 export function getRoomTopic (offerId: string): string {
   return `${config.get<number>('networkId')}:${offerId}`
 }
 
 export function leaveRoom (topic: string): void {
-    rooms.get(topic)?.room.leave()
+    rooms.get(topic)?.leave()
     rooms.delete(topic)
+}
+
+export function getOrCreateRoom (topic: string, libp2p: Libp2p, roomLogger: Logger): Room {
+  if (rooms.has(topic)) {
+    return rooms.get(topic) as Room
+  }
+  const room = new Room(libp2p, topic)
+  rooms.set(topic, room) // store room to be able to leave the channel when offer is terminated
+  roomLogger.info(`Created room for topic: ${topic}`)
+  return room
 }
 
 export function subscribeForOffer (
@@ -33,23 +44,11 @@ export function subscribeForOffer (
     throw new Error('Libp2p not initialized')
   }
   const topic = getRoomTopic(offerId)
-
-  // Check if room already existed
-  if (rooms.has(topic)) {
-    if (rooms.get(topic)?.peerId === peerId) {
-      return
-    }
-    // Recreate room if peerId changed
-    rooms.get(topic)?.room.leave()
-  }
-
   const roomLogger = loggingFactory(`communication:room:${topic}`)
+  const room = getOrCreateRoom(topic, libp2p, roomLogger)
   const handler = errorHandler(messageHandler(offerId, storageProvider, roomLogger), roomLogger)
-  const room = new Room(libp2p, topic)
-  rooms.set(topic, { room, peerId }) // store room to be able to leave the channel when offer is terminated
-  roomLogger.info(`Created room for topic: ${topic}`)
 
-  room.on('message', async ({ from, data: message }: Message<any>) => {
+  const unsubscribe = room.on('message', async ({ from, data: message }: Message<any>) => {
     // Ignore message from itself
     if (from === (libp2p as Libp2p).peerId.toJSON().id) {
       return
@@ -57,15 +56,20 @@ export function subscribeForOffer (
 
     roomLogger.debug(`Receive message: ${JSON.stringify(message)}`)
 
-    if (from !== rooms.get(topic)?.peerId) {
+    if (from !== peerId) {
       return
     }
 
-    await handler(message as CommsMessage<CommsPayloads>)
+    if (await handler(message as CommsMessage<CommsPayloads>)) {
+      // If handler returns true, than it signals no further messages are expected
+      // and we remove this handler.
+      unsubscribe()
+    }
   })
   room.on('peer:joined', (peer) => roomLogger.debug(`${topic}: peer ${peer} joined`))
   room.on('peer:left', (peer) => roomLogger.debug(`${topic}: peer ${peer} left`))
   room.on('error', (e) => roomLogger.error(e))
+  setTimeout(unsubscribe, parse(config.get<string>('gc.jobTtl')) as number)
 }
 
 export async function initLibp2p (): Promise<Libp2p> {
