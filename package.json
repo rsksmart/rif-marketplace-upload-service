@@ -53,7 +53,7 @@
     "tasegir:link": "ln -s ./node_modules/tasegir/src/config/tsconfig.json ./tsconfig.json && ln -s ./node_modules/tasegir/src/config/eslintrc.js ./.eslintrc.js"
   },
   "dependencies": {
-    "@feathersjs/express": "^4.5.4",
+    "@feathersjs/express": "^4.5.10",
     "@feathersjs/feathers": "^4.5.1",
     "@feathersjs/socketio": "^4.5.4",
     "@oclif/command": "^1.8.0",
@@ -112,7 +112,7 @@
     "cross-env": "^7.0.2",
     "dirty-chai": "^2.0.1",
     "form-data": "^3.0.0",
-    "sinon": "^9.0.3",
+    "sinon": "^9.2.1",
     "tasegir": "^1.8.0"
   },
   "engines": {
