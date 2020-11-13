@@ -17,7 +17,7 @@ chai.use(dirtyChai)
 const expect = chai.expect
 
 describe('GC', function () {
-  this.timeout(500)
+  this.timeout(1000)
   const jobTtl = config.get('gc.jobTtl')
   const leaveRoomSpy = sinon.spy()
   const providerRmSpy = sinon.spy()
@@ -71,7 +71,7 @@ describe('GC', function () {
     expect(jobs.length).to.be.eql(3)
     expect(rooms.size).to.be.eql(1)
 
-    await sleep(150)
+    await sleep(300)
 
     await gcFiles(provider)
 
