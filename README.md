@@ -102,10 +102,10 @@ file and load that either using the `--config` CLI parameter or using environmen
 $ npm install -g @rsksmart/rif-marketplace-upload-service
 
 // Connection to your database
-$ export RIFMUS_DB=myDbDile.sqlite
+$ export RIFMUS_DB=myDbFile.sqlite
 
-// Sync the schema of database
-$ rif-marketplace-upload-service db-sync
+// Database migrations
+$ rif-marketplace-upload-service db-migration --up
 
 // Start the server
 $ rif-marketplace-upload-service start --port 8000
@@ -113,25 +113,38 @@ $ rif-marketplace-upload-service start --port 8000
 
 ### Commands
 <!-- commands -->
-* [`rif-marketplace-upload-service db-sync`](#rif-marketplace-upload-service-db-sync)
+* [`rif-marketplace-upload-service db-migration`](#rif-marketplace-upload-service-db-migration)
 * [`rif-marketplace-upload-service purge [SERVICE]`](#rif-marketplace-upload-service-purge)
 * [`rif-marketplace-upload-service start`](#rif-marketplace-upload-service-start)
 
-#### `rif-marketplace-cache db-sync`
+#### `rif-marketplace-cache db-migration`
 
-synchronize database schema
+migrate database schema
 
 ```
 USAGE
-  $ rif-marketplace-upload-service db-sync
+  $ rif-marketplace-upload-service db-migration
 
 OPTIONS
+  -d, --down                           Undo db migrations
+  -d, --generate=generate              Generate migrations using template [--generate=migration_name]
+  -m, --migration=migration            Migration file
+  -t, --to=to                          Migrate to
+  -u, --up                             Migrate DB
   --config=config                      path to JSON config file to load
   --db=db                              database connection URI
-  --force                              removes all tables and recreates them
-  --log=error|warn|info|verbose|debug  [default: warn] what level of information to log
+  --log=error|warn|info|verbose|debug  [default: info] what level of information to log
   --log-filter=log-filter              what components should be logged (+-, chars allowed)
   --log-path=log-path                  log to file, default is STDOUT
+
+EXAMPLES
+  $ rif-marketplace-upload-service db-migration --up
+  $ rif-marketplace-upload-service db-migration --down
+  $ rif-marketplace-upload-service db-migration --up --to 0-test
+  $ rif-marketplace-upload-service db-migration --up --migrations 01-test --migrations 02-test
+  $ rif-marketplace-upload-service db-migration --up --db ./test.sqlite --to 09-test
+  $ rif-marketplace-upload-service db-migration --down --db ./test.sqlite --to 09-test
+  $ rif-marketplace-upload-service db-migration --generate my_first_migration
 
 ```
 
