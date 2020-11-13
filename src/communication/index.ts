@@ -47,7 +47,7 @@ export function subscribeForOffer (
   const topic = getRoomTopic(offerId, contractAddress)
   const roomLogger = loggingFactory(`communication:room:${topic}`)
   const room = getOrCreateRoom(topic, libp2p, roomLogger)
-  const handler = errorHandler(messageHandler(offerId, storageProvider, roomLogger), roomLogger)
+  const handler = errorHandler(messageHandler(offerId, contractAddress, storageProvider, roomLogger), roomLogger)
 
   const unsubscribe = room.on('message', async ({ from, data: message }: Message<any>) => {
     // Ignore message from itself
