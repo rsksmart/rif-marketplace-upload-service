@@ -46,7 +46,7 @@ npm install -g @rsksmart/rif-marketplace-upload-service
 First synchronize database scheme:
 
 ```bash
-$ rif-marketplace-upload-service db-sync --config ./path/to/custom_config
+$ rif-marketplace-upload-service db-migration --up --config ./path/to/custom_config
 ```
 
 Finally, run the server:

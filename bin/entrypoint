@@ -4,5 +4,5 @@
 # Will be on the log file
 env
 
-./bin/run db-sync "$@"
+./bin/run db-migration --up
 ./bin/run start "$@"
