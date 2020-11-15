@@ -1,0 +1,21 @@
+{
+  port: 3030,
+  networkId: 420,
+  ipfs: {
+    clientOptions: {
+      // The default value for go-ipfs
+      url: 'http://localhost:5002',
+    }
+  },
+  comms: {
+    libp2p: {
+      config: {
+        peerDiscovery: {
+          bootstrap: {
+            enabled: false,
+          }
+        }
+      }
+    }
+  },
+}
