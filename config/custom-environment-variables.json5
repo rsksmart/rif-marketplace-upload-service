@@ -14,7 +14,7 @@
     libp2p: {
       addresses: {
         listen: {
-          "__name": "RIFS_COMMS_LISTEN",
+          "__name": "RIFMUS_COMMS_LISTEN",
           "__format": "json"
         }
       },
@@ -22,7 +22,7 @@
         peerDiscovery: {
           bootstrap: {
             list: {
-              "__name": "RIFS_COMMS_BOOTSTRAP",
+              "__name": "RIFMUS_COMMS_BOOTSTRAP",
               "__format": "json"
             }
           }
