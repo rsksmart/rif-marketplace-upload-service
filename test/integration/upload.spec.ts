@@ -102,7 +102,7 @@ describe('Upload service', function () {
       // @ts-ignore
       config.gc.interval = '1000ms'
       // @ts-ignore
-      config.gc.jobTtl = '500ms'
+      config.gc.jobTtl = '1000ms'
       gc = jobsGC(testApp.app!.app)
     })
     after(() => {
@@ -140,7 +140,7 @@ describe('Upload service', function () {
       expect(await isPinned(ipfs, new CID(file3Response.fileHash))).to.be.true()
       expect(job3).to.be.instanceOf(UploadJob)
 
-      await sleep(1000)
+      await sleep(2000)
 
       expect(await isPinned(ipfs, new CID(file1Response.fileHash))).to.be.eql(false)
       expect(await isPinned(ipfs, new CID(file2Response.fileHash))).to.be.eql(false)

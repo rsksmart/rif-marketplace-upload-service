@@ -8,6 +8,7 @@ import PeerId from 'peer-id'
 
 import { loggingFactory } from '../../src/logger'
 import { appFactory } from '../../src/app'
+import DbMigration from '../../src/migrations'
 import { sequelizeFactory } from '../../src/sequelize'
 import { Application } from '../../src/definitions'
 import { sleep } from '../utils'
@@ -37,7 +38,8 @@ export class TestingApp {
     this.logger.info('Database removed')
     // Init DB
     const sequelize = await sequelizeFactory()
-    await sequelize.sync({ force: true })
+    const migration = new DbMigration(sequelize)
+    await migration.up()
     this.logger.info('Database initialized')
   }
 

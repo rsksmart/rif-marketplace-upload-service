@@ -1,6 +1,6 @@
 {
   "name": "@rsksmart/rif-marketplace-upload-service",
-  "version": "0.0.1",
+  "version": "0.1.0-dev.1",
   "description": "Service for Uploading files to Storage Providers(IPFS, Swarm, ...)",
   "keywords": [
     "RIF",
@@ -45,7 +45,7 @@
     "docs": "typedoc --mode modules --excludeNotExported --readme none --excludePrivate  --tsconfig ./node_modules/tasegir/src/config/tsconfig.json --exclude 'src/providers/*,test/**/*' --out docs src",
     "types-check": "tasegir types-check",
     "lint": "tasegir lint",
-    "release": "tasegir release",
+    "release": "cross-env ALLOW_CONFIG_MUTATIONS=true tasegir release --no-docs --no-build --target node",
     "test": "npm run test:unit && npm run test:integration",
     "test:integration": "cross-env ALLOW_CONFIG_MUTATIONS=true tasegir test --target node --files ./test/integration/**/*.spec.ts --files ./test/integration/**/**/*.spec.ts",
     "test:unit": "cross-env ALLOW_CONFIG_MUTATIONS=true tasegir test --target node --files ./test/unit/*.spec.ts --files ./test/unit/**/*.spec.ts --files ./test/unit/**/**/*.spec.ts",
@@ -121,7 +121,10 @@
   },
   "types": "types/index.d.ts",
   "contributors": [
-    "Nazar Duchak <nazar@iovlabs.org>"
+    "Adam Uhlíř <adam@uhlir.dev>",
+    "Nazar Duchak <nazar@iovlabs.org>",
+    "Nazar Duchak <41945483+nduchak@users.noreply.github.com>",
+    "dependabot-preview[bot] <27856297+dependabot-preview[bot]@users.noreply.github.com>"
   ],
   "oclif": {
     "commands": "./src/cli",

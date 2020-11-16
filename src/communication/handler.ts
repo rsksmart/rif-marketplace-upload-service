@@ -35,7 +35,12 @@ async function hashPinnedHandler (
   const pendingJobsForHash = await UploadJob.count({ where: { fileHash } })
 
   if (!pendingJobsForHash) {
-    await storageProvider?.rm(job.fileHash)
+    await storageProvider?.rm(job.fileHash).catch(e => {
+      if (e.code === 'NOT_PINNED_ERR') {
+        return
+      }
+      throw e
+    })
     roomLogger.info(`File ${job.fileHash} for offer ${job.offerId} unpinned`)
   }
 
