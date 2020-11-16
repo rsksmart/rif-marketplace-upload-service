@@ -1,6 +1,6 @@
 {
   "name": "@rsksmart/rif-marketplace-upload-service",
-  "version": "0.0.1-dev.0",
+  "version": "0.1.0-dev.0",
   "description": "Service for Uploading files to Storage Providers(IPFS, Swarm, ...)",
   "keywords": [
     "RIF",
