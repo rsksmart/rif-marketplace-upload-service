@@ -1,0 +1,18 @@
+{
+  port: 3030,
+  networkId: 31,
+  comms: {
+    libp2p: {
+      config: {
+        peerDiscovery: {
+          bootstrap: {
+            list: [
+              '/dns4/pubsub-01.us-west-2.aws.staging.rifcomputing.net/tcp/6666',
+              '/dns4/pubsub-02.us-west-2.aws.staging.rifcomputing.net/tcp/6666'
+            ]
+          }
+        },
+      },
+    },
+  }
+}

@@ -1,5 +1,4 @@
 {
-  port: 3030,
   networkId: 420,
   ipfs: {
     clientOptions: {
