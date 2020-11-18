@@ -61,12 +61,13 @@ describe('GC', function () {
     // @ts-ignore
     config.gc.jobTtl = '100ms'
 
-    rooms.set(getRoomTopic('test'), {} as PubSubRoom)
+    const contractAddress = '0xTestContractAddress'
+    rooms.set(getRoomTopic('test', contractAddress), {} as PubSubRoom)
 
     const jobs = await UploadJob.bulkCreate([
-      { offerId: 'test', account: 'testAcc', fileHash: 'file1', peerId: 'testPeer', status: UploadJobStatus.WAITING_FOR_PINNING },
-      { offerId: 'test', account: 'testAcc', fileHash: 'file2', peerId: 'testPeer', status: UploadJobStatus.WAITING_FOR_PINNING },
-      { offerId: 'test', account: 'testAcc', fileHash: 'file3', peerId: 'testPeer', status: UploadJobStatus.WAITING_FOR_PINNING }
+      { offerId: 'test', account: 'testAcc', contractAddress, fileHash: 'file1', peerId: 'testPeer', status: UploadJobStatus.WAITING_FOR_PINNING },
+      { offerId: 'test', account: 'testAcc', contractAddress, fileHash: 'file2', peerId: 'testPeer', status: UploadJobStatus.WAITING_FOR_PINNING },
+      { offerId: 'test', account: 'testAcc', contractAddress, fileHash: 'file3', peerId: 'testPeer', status: UploadJobStatus.WAITING_FOR_PINNING }
     ])
     expect(jobs.length).to.be.eql(3)
     expect(rooms.size).to.be.eql(1)
@@ -79,8 +80,7 @@ describe('GC', function () {
     expect(providerRmSpy.calledOnceWith(jobs[0].fileHash))
     expect(providerRmSpy.calledOnceWith(jobs[1].fileHash))
     expect(providerRmSpy.calledOnceWith(jobs[2].fileHash))
-    expect(providerRmSpy.calledOnceWith(jobs[2].fileHash))
-    expect(leaveRoomSpy.calledWith(getRoomTopic('test')))
+    expect(leaveRoomSpy.calledWith(getRoomTopic('test', 'test')))
 
     // @ts-ignore
     config.gc.jobTtl = jobTtl

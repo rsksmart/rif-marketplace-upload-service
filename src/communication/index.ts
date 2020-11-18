@@ -15,8 +15,8 @@ const logger = loggingFactory('communication')
 // (offerId -> room) MAP
 export const rooms = new Map<string, Room>()
 
-export function getRoomTopic (offerId: string): string {
-  return `${config.get<number>('networkId')}:${offerId}`
+export function getRoomTopic (offerId: string, contractAddress: string): string {
+  return `${config.get<number>('networkId')}:${contractAddress}:${offerId}`
 }
 
 export function leaveRoom (topic: string): void {
@@ -38,15 +38,16 @@ export function subscribeForOffer (
   libp2p: Libp2p,
   storageProvider: ProviderManager,
   offerId: string,
-  peerId: string
+  peerId: string,
+  contractAddress: string
 ): void {
   if (!libp2p) {
     throw new Error('Libp2p not initialized')
   }
-  const topic = getRoomTopic(offerId)
+  const topic = getRoomTopic(offerId, contractAddress)
   const roomLogger = loggingFactory(`communication:room:${topic}`)
   const room = getOrCreateRoom(topic, libp2p, roomLogger)
-  const handler = errorHandler(messageHandler(offerId, storageProvider, roomLogger), roomLogger)
+  const handler = errorHandler(messageHandler(offerId, contractAddress, storageProvider, roomLogger), roomLogger)
 
   const unsubscribe = room.on('message', async ({ from, data: message }: Message<any>) => {
     // Ignore message from itself

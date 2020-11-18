@@ -10,6 +10,7 @@ import UploadJob from '../upload/upload.model'
 
 async function hashPinnedHandler (
   offerId: string,
+  contractAddress: string,
   message: CommsMessage<HashInfoPayload>,
   storageProvider: ProviderManager,
   roomLogger: Logger
@@ -19,7 +20,8 @@ async function hashPinnedHandler (
     {
       where: {
         fileHash,
-        offerId
+        offerId,
+        contractAddress
       }
     }
   )
@@ -45,23 +47,24 @@ async function hashPinnedHandler (
   }
 
   // Leave room if not active jobs for that offer
-  const pendingJobsForOffer = await UploadJob.count({ where: { offerId } })
+  const pendingJobsForOffer = await UploadJob.count({ where: { offerId, contractAddress } })
 
   if (!pendingJobsForOffer) {
     roomLogger.info('Leaving room')
-    leaveRoom(getRoomTopic(offerId))
+    leaveRoom(getRoomTopic(offerId, contractAddress))
   }
 }
 
 export function messageHandler (
   offerId: string,
+  contractAddress: string,
   storageProvider: ProviderManager,
   roomLogger: Logger
 ): (message: CommsMessage<CommsPayloads>) => Promise<boolean> {
   return async function (message: CommsMessage<CommsPayloads>): Promise<boolean> {
     switch (message.code) {
       case MessageCodesEnum.I_HASH_PINNED:
-        await hashPinnedHandler(offerId, message as CommsMessage<HashInfoPayload>, storageProvider, roomLogger)
+        await hashPinnedHandler(offerId, contractAddress, message as CommsMessage<HashInfoPayload>, storageProvider, roomLogger)
         return true
       default:
         return false

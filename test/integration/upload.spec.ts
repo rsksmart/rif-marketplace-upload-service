@@ -23,6 +23,8 @@ import { isPinned, TestingApp } from './utils'
 chai.use(dirtyChai)
 const expect = chai.expect
 
+const contractAddress = '0xTestContractAddress'
+
 function upload (provider: string, account: string, peerId: string, filesPath?: string[]): Promise<any> {
   const form = new FormData()
 
@@ -34,6 +36,7 @@ function upload (provider: string, account: string, peerId: string, filesPath?: 
   form.append('offerId', provider)
   form.append('peerId', peerId)
   form.append('account', account)
+  form.append('contractAddress', contractAddress)
 
   const options = {
     method: 'POST',
@@ -76,7 +79,7 @@ describe('Upload service', function () {
     // Create libp2p ndoe for pinner
     libp2p = await spawnLibp2p(await PeerId.createFromJSON(testApp.peerId as JSONPeerId))
     // Create PubSub room to listen on events
-    roomPinner = await createLibp2pRoom(libp2p, testApp.providerAddress)
+    roomPinner = await createLibp2pRoom(libp2p, testApp.providerAddress, contractAddress)
   })
   after(async () => {
     await testApp.stop()

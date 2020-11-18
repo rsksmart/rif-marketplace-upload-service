@@ -44,8 +44,8 @@ export function spawnLibp2p (peerId: PeerId): Promise<Libp2p> {
  * @param libp2p
  * @param offerId
  */
-export function createLibp2pRoom (libp2p: Libp2p, offerId: string): Room {
-  const roomName = getRoomTopic(offerId)
+export function createLibp2pRoom (libp2p: Libp2p, offerId: string, contractAddress: string): Room {
+  const roomName = getRoomTopic(offerId, contractAddress)
   const logger = loggingFactory(`test:comms:room:${roomName}`)
   logger.info(`Listening on room ${roomName}`)
 

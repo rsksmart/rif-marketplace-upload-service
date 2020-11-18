@@ -51,7 +51,8 @@ MultiPartFormData: {
   files: File2,
   account: string,
   offerId: string,
-  peerId: string
+  peerId: string,
+  contractAddress: string
 }
 ```
 
