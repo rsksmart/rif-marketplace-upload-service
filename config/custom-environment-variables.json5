@@ -14,15 +14,16 @@
     libp2p: {
       addresses: {
         listen: {
-          "__name": "RIFS_COMMS_LISTEN",
+          "__name": "RIFMUS_COMMS_LISTEN",
           "__format": "json"
         }
       },
       config: {
         peerDiscovery: {
           bootstrap: {
+            enabled: "RIFMUS_COMMS_BOOTSTRAP_ENABLED",
             list: {
-              "__name": "RIFS_COMMS_BOOTSTRAP",
+              "__name": "RIFMUS_COMMS_BOOTSTRAP_LIST",
               "__format": "json"
             }
           }

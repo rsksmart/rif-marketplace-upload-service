@@ -89,6 +89,9 @@ file and load that either using the `--config` CLI parameter or using environmen
  - `RIFMUS_DB` (string): database connection URI
  - `RIFMUS_NETWORK_ID` (number): network id
  - `RIFMUS_IPFS_URL` (string): IPFS Node url
+ - `RIFMUS_COMMS_LISTEN` (`array`) - Defines an array of multiaddress that the Upload service libp2p node will listen on. Same as libp2p config's [`address.listen`](https://github.com/libp2p/js-libp2p/blob/master/doc/CONFIGURATION.md#customizing-libp2p) property.
+ - `RIFMUS_COMMS_BOOTSTRAP_ENABLED` (`true`/`false`) - Defines if bootstrap should be used. Same as libp2p config's [`bootstrap.enabled`](https://github.com/libp2p/js-libp2p-bootstrap) property.
+ - `RIFMUS_COMMS_BOOTSTRAP_LIST` (`array`) - Defines an array of multiaddress that the Upload service libp2p node will use to bootstrap its connectivity. Same as libp2p config's [`bootstrap.list`](https://github.com/libp2p/js-libp2p-bootstrap) property.
  - CORS settings ([see more on expressjs documentation](https://expressjs.com/en/resources/middleware/cors.html)):
     - `RIFMUS_CORS_ORIGIN` (boolean | string | regexp): Configures the Access-Control-Allow-Origin CORS header
     - `RIFMUS_CORS_METHODS` (string) Configures the Access-Control-Allow-Methods CORS header

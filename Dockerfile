@@ -12,20 +12,22 @@ RUN npm run compile
 # Runtime container
 FROM node:10-alpine
 
-RUN mkdir -p /srv/app && chown node:node /srv/app
+RUN mkdir -p /srv/app && chown node:node /srv/app \
+ && mkdir -p /srv/data && chown node:node /srv/data
 
 USER node
 WORKDIR /srv/app
-COPY --from=compiler /usr/src/app/lib ./lib/
-COPY --from=compiler /usr/src/app/node_modules ./node_modules/
-COPY package*.json ./
-COPY bin ./bin/
-COPY config ./config/
+COPY --from=compiler --chown=node:node /usr/src/app/lib ./lib/
+COPY --from=compiler --chown=node:node /usr/src/app/node_modules ./node_modules/
+COPY --chown=node:node package*.json ./
+COPY --chown=node:node bin ./bin/
+COPY --chown=node:node config ./config/
 
 RUN sed -i 's#"./src/cli"#"./lib/cli"#g' package.json
 
 EXPOSE 3030
 
+ENV RIFMUS_DB '/srv/data/db.sqlite'
 ENV NODE_ENV 'production'
 
 ENTRYPOINT [ "./bin/entrypoint" ]

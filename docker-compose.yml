@@ -1,0 +1,49 @@
+version: "3"
+
+services:
+  # IPFS container definition
+  ipfs:
+    image: ipfs/go-ipfs:v0.7.0
+    env_file:
+      - .env-upload-service
+    volumes:
+      - "ipfs-repo:/data/ipfs"
+    ports:
+      - 4001:4001
+      - 4001:4001/udp
+    expose:
+      - 5001
+    networks:
+      - rif-marketplace-upload-services
+
+  # Uplaod service container definition
+  rif-marketplace-upload-service:
+    image: rif-marketplace-upload-service:latest
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      RIFMUS_COMMS_LISTEN: '["/ip4/127.0.0.1/tcp/8999", "/ip4/127.0.0.1/tcp/8998/ws"]'
+      RIFMUS_IPFS_URL: 'http://ipfs:5001'
+      LOG_LEVEL: 'verbose'
+      RIFMUS_DB: '/srv/data/db.sqlite'
+    env_file:
+      - .env-upload-service
+    ports:
+      - 8999:8999
+      - 8998:8998
+      - 3030:3030
+    expose:
+      - 3030
+    volumes:
+      - upload-service-db:/srv/data/
+    networks:
+      - rif-marketplace-upload-services
+
+networks:
+  rif-marketplace-upload-services:
+    driver: bridge
+
+volumes:
+  ipfs-repo:
+  upload-service-db:

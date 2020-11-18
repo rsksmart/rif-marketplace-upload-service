@@ -1,0 +1,20 @@
+{
+  port: 3030,
+  networkId: 31,
+  comms: {
+    libp2p: {
+      config: {
+        peerDiscovery: {
+          bootstrap: {
+            list: [
+              '/dns4/pubsub-01.marketplace.staging.rifcomputing.net/tcp/8998',
+              '/dns4/pubsub-02.marketplace.staging.rifcomputing.net/tcp/8998',
+              '/dns4/pubsub-01.marketplace.staging.rifcomputing.net/tcp/8999/ws',
+              '/dns4/pubsub-02.marketplace.staging.rifcomputing.net/tcp/8999/ws'
+            ]
+          }
+        },
+      },
+    },
+  }
+}

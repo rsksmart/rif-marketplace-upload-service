@@ -24,6 +24,9 @@ coverage
 # Dependency directory
 node_modules
 
+# Deployment env
+.env-upload-service
+
 # Oclif Manifest
 oclif.manifest.json
 
