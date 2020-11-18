@@ -21,8 +21,9 @@
       config: {
         peerDiscovery: {
           bootstrap: {
+            enabled: "RIFMUS_COMMS_BOOTSTRAP_ENABLED",
             list: {
-              "__name": "RIFMUS_COMMS_BOOTSTRAP",
+              "__name": "RIFMUS_COMMS_BOOTSTRAP_LIST",
               "__format": "json"
             }
           }

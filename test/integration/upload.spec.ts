@@ -140,7 +140,7 @@ describe('Upload service', function () {
       expect(await isPinned(ipfs, new CID(file3Response.fileHash))).to.be.true()
       expect(job3).to.be.instanceOf(UploadJob)
 
-      await sleep(2000)
+      await sleep(3000)
 
       expect(await isPinned(ipfs, new CID(file1Response.fileHash))).to.be.eql(false)
       expect(await isPinned(ipfs, new CID(file2Response.fileHash))).to.be.eql(false)
