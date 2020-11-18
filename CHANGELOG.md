@@ -1,3 +1,13 @@
+<a name="0.1.0-dev.2"></a>
+# [0.1.0-dev.2](https://github.com/rsksmart/rif-storage-upload-service/compare/v0.1.0-dev.1...v0.1.0-dev.2) (2020-11-18)
+
+
+### Features
+
+* adjust topic computation ([#20](https://github.com/rsksmart/rif-storage-upload-service/issues/20)) ([6d8df67](https://github.com/rsksmart/rif-storage-upload-service/commit/6d8df67))
+
+
+
 <a name="0.1.0-dev.1"></a>
 # 0.1.0-dev.1 (2020-11-16)
 
