@@ -25,7 +25,7 @@ const expect = chai.expect
 
 const contractAddress = '0xTestContractAddress'
 
-function upload (provider: string, account: string, peerId: string, filesPath?: string[]): Promise<any> {
+function upload (provider: string, account: string, peerId?: string, filesPath?: string[]): Promise<any> {
   const form = new FormData()
 
   if (filesPath) {
@@ -34,7 +34,8 @@ function upload (provider: string, account: string, peerId: string, filesPath?: 
     )
   }
   form.append('offerId', provider)
-  form.append('peerId', peerId)
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+  peerId && form.append('peerId', peerId)
   form.append('account', account)
   form.append('contractAddress', contractAddress)
 
@@ -210,6 +211,15 @@ describe('Upload service', function () {
         await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/bigFile.txt'])
       } catch (e) {
         expect(e.error.message).to.be.eql('File too large')
+      }
+    })
+    it('should throw if no required params provided', async () => {
+      const missedParams = ['peerId', 'account']
+      try {
+        await upload(testApp.providerAddress, '', undefined, ['./test/integration/files/testFile.txt'])
+      } catch (e) {
+        expect(e.statusCode).to.be.eql(422)
+        expect(e.error.error).to.be.eql(`Params ${missedParams} required`)
       }
     })
   })
