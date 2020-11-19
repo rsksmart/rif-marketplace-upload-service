@@ -21,9 +21,9 @@ async function unlinkFiles (files: any[]): Promise<void> {
 export default function (storageProvider: ProviderManager, libp2p: Libp2p): UploadRouteHandler {
   return async (req: any, res: any): Promise<void> => {
     const { offerId, peerId, account, contractAddress } = req.body
-    const missedParams = ['offerId', 'peerId', 'account', 'contractAddress'].filter(k => req.body[k])
+    const missedParams = ['offerId', 'peerId', 'account', 'contractAddress'].filter(k => !req.body[k])
 
-    if (!missedParams.length) {
+    if (missedParams.length) {
       return res.status(422).json({
         error: `Params ${missedParams} required`
       })
