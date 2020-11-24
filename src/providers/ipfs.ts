@@ -50,7 +50,7 @@ export class IpfsProvider implements Provider {
     }
 
     const ipfs = ipfsClient(options)
-// TODO remove when this API officially supported
+    // TODO remove when this API officially supported
     ipfs.dag = { stat: getDagStat(typeof options === 'string' ? options : options.url as string) }
 
     let versionObject: Version
