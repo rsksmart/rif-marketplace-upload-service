@@ -6,8 +6,8 @@ type GetFileSizeRouteHandler = (req: any, res: any) => Promise<void>
 
 export default function (storageProvider: ProviderManager): GetFileSizeRouteHandler {
   return async (req: any, res: any): Promise<void> => {
-    const { hash } = req.params
-    const missedParams = ['hash'].filter(k => !req.params[k])
+    const { hash } = req.query
+    const missedParams = ['hash'].filter(k => !req.query[k])
 
     if (missedParams.length) {
       return res.status(422).json({
@@ -16,9 +16,16 @@ export default function (storageProvider: ProviderManager): GetFileSizeRouteHand
     }
 
     logger.info(`Retrieving file size for hash ${hash}`)
-    return res.json({
-      fileHash: hash,
-      fileSizeBytes: await storageProvider.getFileSize(hash)
-    })
+    try {
+      return res.json({
+        fileHash: hash,
+        fileSizeBytes: await storageProvider.getFileSize(hash)
+      })
+    } catch (e) {
+      res.status(500).json({
+        message: e.message,
+        name: 'GET_FILE_SIZE_ERROR'
+      })
+    }
   }
 }
