@@ -8,6 +8,7 @@ import ipfsClient, {
   Version
 } from 'ipfs-http-client'
 import * as semver from 'semver'
+import fetch, { RequestInit } from 'node-fetch'
 
 import type { Provider } from '../definitions'
 import { NotPinnedError } from '../errors'
@@ -17,6 +18,11 @@ const logger = loggingFactory('ipfs')
 
 const REQUIRED_IPFS_VERSION = '>=0.5.0'
 const NOT_PINNED_ERROR_MSG = 'not pinned or pinned indirectly'
+
+export function getDagStat (nodeUrl: string): (cid: CID, options?: any) => Promise<any> {
+  return (cid: CID, options?: RequestInit): Promise<any> =>
+    fetch(`${nodeUrl}/api/v0/dag/stat?arg=${cid.toString()}`, { method: 'POST', ...options })
+}
 
 export class IpfsProvider implements Provider {
   private readonly ipfs: IpfsClient
@@ -32,6 +38,8 @@ export class IpfsProvider implements Provider {
     }
 
     const ipfs = ipfsClient(options)
+    // TODO remove when this API officially supported
+    ipfs.dag.stat = getDagStat(typeof options === 'string' ? options : options.url as string)
 
     let versionObject: Version
     try {
@@ -83,5 +91,12 @@ export class IpfsProvider implements Provider {
         throw e
       }
     }
+  }
+
+  getActualSize (hash: string): Promise<number> {
+    hash = hash.replace('/ipfs/', '')
+    const cid = new CID(hash)
+
+    return this.ipfs.dag.stat(cid).then(res => res.Size)
   }
 }
