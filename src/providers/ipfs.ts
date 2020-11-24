@@ -19,9 +19,19 @@ const logger = loggingFactory('ipfs')
 const REQUIRED_IPFS_VERSION = '>=0.5.0'
 const NOT_PINNED_ERROR_MSG = 'not pinned or pinned indirectly'
 
-export function getDagStat (nodeUrl: string): (cid: CID, options?: any) => Promise<any> {
-  return (cid: CID, options?: RequestInit): Promise<any> =>
-    fetch(`${nodeUrl}/api/v0/dag/stat?arg=${cid.toString()}`, { method: 'POST', ...options })
+export function getDagStat (nodeUrl: string): (cid: CID, options?: any) => Promise<{ Size: number }> {
+  return (cid: CID, options?: RequestInit): Promise<{ Size: number }> =>
+    fetch(`${nodeUrl}/dag/stat?arg=${cid.toString()}`, { method: 'POST', ...options })
+      .then(async res => {
+        if (!res.ok) {
+          throw new Error(`Get dag stat for hash ${cid.toString()} error, ${res.statusText}`)
+        }
+        return (await res.text())
+          .split('\n')
+          .filter(el => el)
+          .map(el => JSON.parse(el))
+          .reduce((acc, el) => el.NumBlocks > acc.NumBlocks ? el : acc)
+      })
 }
 
 export class IpfsProvider implements Provider {
