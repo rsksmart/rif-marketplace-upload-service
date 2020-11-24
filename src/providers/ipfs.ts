@@ -49,7 +49,7 @@ export class IpfsProvider implements Provider {
 
     const ipfs = ipfsClient(options)
     // TODO remove when this API officially supported
-    ipfs.dag.stat = getDagStat(typeof options === 'string' ? options : options.url as string)
+    ipfs.dag = { stat: getDagStat(typeof options === 'string' ? options : options.url as string) }
 
     let versionObject: Version
     try {
@@ -107,6 +107,6 @@ export class IpfsProvider implements Provider {
     hash = hash.replace('/ipfs/', '')
     const cid = new CID(hash)
 
-    return this.ipfs.dag.stat(cid).then(res => res.Size)
+    return this.ipfs.dag.stat!(cid).then(res => res.Size)
   }
 }
