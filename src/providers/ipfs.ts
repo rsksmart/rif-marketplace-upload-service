@@ -8,7 +8,9 @@ import ipfsClient, {
   Version
 } from 'ipfs-http-client'
 import * as semver from 'semver'
+import config from 'config'
 import fetch, { RequestInit } from 'node-fetch'
+import parse from 'parse-duration'
 
 import type { Provider } from '../definitions'
 import { NotPinnedError } from '../errors'
@@ -109,13 +111,35 @@ export class IpfsProvider implements Provider {
     hash = hash.replace('/ipfs/', '')
     const cid = new CID(hash)
 
-    return this.ipfs.dag.stat!(cid).then(res => res.Size)
+    return this.ipfs.dag.stat!(
+      cid,
+      { timeout: parse(config.get<string>('ipfs.sizeFetchTimeout')) as number }
+    )
+      .then(res => res.Size)
+      .catch(e => {
+        if (e.name === 'TimeoutError') {
+          logger.error(`Fetching size of ${cid.toString()} timed out!`)
+          throw new Error(`Fetching size of ${cid.toString()} timed out!`)
+        }
+        throw e
+      })
   }
 
   getMetaSize (hash: string): Promise<number> {
     hash = hash.replace('/ipfs/', '')
     const cid = new CID(hash)
 
-    return this.ipfs.object.stat(cid).then(res => res.CumulativeSize)
+    return this.ipfs.object.stat(
+      cid,
+      { timeout: parse(config.get<string>('ipfs.sizeFetchTimeout')) as number }
+    )
+      .then(res => res.CumulativeSize)
+      .catch(e => {
+        if (e.name === 'TimeoutError') {
+          logger.error(`Fetching size of ${cid.toString()} timed out!`)
+          throw new Error(`Fetching size of ${cid.toString()} timed out!`)
+        }
+        throw e
+      })
   }
 }

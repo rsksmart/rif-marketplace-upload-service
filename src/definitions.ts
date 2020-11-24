@@ -37,7 +37,7 @@ export interface Config {
 
   ipfs?: {
     clientOptions?: IpfsOptions
-    sizeFetchTimeout?: number | string
+    sizeFetchTimeout?: string
   }
 
   gc?: {
