@@ -57,7 +57,6 @@ export default function (storageProvider: ProviderManager, libp2p: Libp2p): Uplo
     })
     const { cid } = await storageProvider.add(files, { wrapWithDirectory: true })
     logger.info(`Files uploaded to IPFS, file hash ${cid.toString()}`)
-
     // Unlink files from fs
     await unlinkFiles(req.files)
 
@@ -66,12 +65,16 @@ export default function (storageProvider: ProviderManager, libp2p: Libp2p): Uplo
     job.status = UploadJobStatus.WAITING_FOR_PINNING
     await job.save()
 
+    // Get file size
+    const fileSize = await storageProvider.getMetaFileSize(job.fileHash)
+
     // Register room
     await subscribeForOffer(libp2p, storageProvider, offerId, peerId, contractAddress)
 
     return res.json({
       message: 'Files uploaded',
-      fileHash: cid.toString()
+      fileHash: cid.toString(),
+      fileSize
     })
   }
 }

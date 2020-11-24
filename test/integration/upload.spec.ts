@@ -13,6 +13,7 @@ import { rooms } from '../../src/communication'
 
 import { MessageCodesEnum, ServiceAddresses, UploadJobStatus } from '../../src/definitions'
 import { ProviderManager } from '../../src/providers'
+import { getDagStat } from '../../src/providers/ipfs'
 import { UPLOAD_FOLDER } from '../../src/upload'
 import UploadJob from '../../src/upload/upload.model'
 import { duplicateObject } from '../../src/utils'
@@ -102,6 +103,7 @@ describe('Upload service', function () {
     await testApp.initAndStart()
 
     ipfs = ipfsClient(duplicateObject(config.get<string>('ipfs.clientOptions')))
+    ipfs.dag.stat = getDagStat(config.get<{ url: string }>('ipfs.clientOptions').url + '/api/v0')
     // Create libp2p ndoe for pinner
     libp2p = await spawnLibp2p(await PeerId.createFromJSON(testApp.peerId as JSONPeerId))
     // Create PubSub room to listen on events
@@ -195,6 +197,8 @@ describe('Upload service', function () {
       expect(job.fileHash).to.be.eql(`/ipfs/${response.fileHash}`)
       expect(job.status).to.be.eql(UploadJobStatus.WAITING_FOR_PINNING)
       expect(await isPinned(ipfs, new CID(response.fileHash))).to.be.true()
+      const fileSize = await ipfs.object.stat(new CID(response.fileHash))
+      expect(fileSize.CumulativeSize).to.be.eql(response.fileSize)
       await ipfs.pin.rm(new CID(response.fileHash))
     })
     it('should upload file and unpin when receive pinned message', async () => {
@@ -258,10 +262,10 @@ describe('Upload service', function () {
       expect(await isPinned(ipfs, new CID(response.fileHash))).to.be.true()
 
       const sizeRes = await getFileSize('/ipfs/' + response.fileHash)
-      const sizeFromFs = fs.statSync(path.resolve(process.cwd(), './test/integration/files/testFile.txt'))
+      const sizeFromIpfs = await ipfs.dag.stat!(new CID(response.fileHash))
 
       expect(typeof sizeRes.fileSizeBytes).to.be.eql('number')
-      expect(sizeRes.fileSizeBytes > sizeFromFs.size).to.be.eql(true)
+      expect(sizeRes.fileSizeBytes).to.be.eql(sizeFromIpfs.Size)
       expect(sizeRes.fileHash).to.be.eql('/ipfs/' + response.fileHash)
 
       await ipfs.pin.rm(new CID(response.fileHash))
