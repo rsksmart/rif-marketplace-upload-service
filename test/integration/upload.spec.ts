@@ -25,12 +25,12 @@ const expect = chai.expect
 
 const contractAddress = '0xTestContractAddress'
 
-function getFileSize (hash: string): Promise<any> {
+function getFileSize (hash?: string): Promise<any> {
   const options = {
     method: 'GET',
     host: 'localhost',
     port: config.get<number>('port'),
-    path: ServiceAddresses.FileSize + `?hash=${hash}`
+    path: ServiceAddresses.FileSize + `?${hash ? 'hash=' + hash : ''}`
   }
   return new Promise((resolve, reject) => {
     const req = request(options, function (res) {
@@ -265,6 +265,15 @@ describe('Upload service', function () {
       expect(sizeRes.fileHash).to.be.eql('/ipfs/' + response.fileHash)
 
       await ipfs.pin.rm(new CID(response.fileHash))
+    })
+    it('should throw if no required params provided', async () => {
+      const missedParams = ['hash']
+      try {
+        await getFileSize()
+      } catch (e) {
+        expect(e.statusCode).to.be.eql(422)
+        expect(e.error.error).to.be.eql(`Params ${missedParams} required`)
+      }
     })
   })
 })
