@@ -57,18 +57,6 @@ export class ProviderManager implements Provider {
     }
   }
 
-  public getActualFileSize (hash: string): Promise<number> {
-    if (hash.startsWith('/ipfs/')) {
-      if (!this.ipfs) {
-        throw new Error('IPFS provider was not registered!')
-      }
-
-      return this.ipfs.getActualSize(hash)
-    } else {
-      throw new Error(`Unknown type of hash ${hash}`)
-    }
-  }
-
   public getMetaFileSize (hash: string): Promise<number> {
     if (hash.startsWith('/ipfs/')) {
       if (!this.ipfs) {

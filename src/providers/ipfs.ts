@@ -9,7 +9,6 @@ import ipfsClient, {
 } from 'ipfs-http-client'
 import * as semver from 'semver'
 import config from 'config'
-import fetch, { RequestInit } from 'node-fetch'
 import parse from 'parse-duration'
 
 import type { Provider } from '../definitions'
@@ -20,19 +19,6 @@ const logger = loggingFactory('ipfs')
 
 const REQUIRED_IPFS_VERSION = '>=0.7.0'
 const NOT_PINNED_ERROR_MSG = 'not pinned or pinned indirectly'
-
-export function getDagStat (
-  nodeUrl: string
-): (cid: CID, options?: any) => Promise<{ Size: number }> {
-  return (cid: CID, options?: RequestInit): Promise<{ Size: number }> =>
-    fetch(`${nodeUrl}/dag/stat?arg=${cid.toString()}&progress=false`, { method: 'POST', ...options })
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`Get dag stat for hash ${cid.toString()} error, ${res.statusText}`)
-        }
-        return res.json()
-      })
-}
 
 export class IpfsProvider implements Provider {
   private readonly ipfs: IpfsClient
@@ -48,8 +34,6 @@ export class IpfsProvider implements Provider {
     }
 
     const ipfs = ipfsClient(options)
-    // TODO remove when this API officially supported
-    ipfs.dag = { stat: getDagStat(typeof options === 'string' ? options : options.url as string) }
 
     let versionObject: Version
     try {
@@ -101,24 +85,6 @@ export class IpfsProvider implements Provider {
         throw e
       }
     }
-  }
-
-  getActualSize (hash: string): Promise<number> {
-    hash = hash.replace('/ipfs/', '')
-    const cid = new CID(hash)
-
-    return this.ipfs.dag.stat!(
-      cid,
-      { timeout: parse(config.get<string>('ipfs.sizeFetchTimeout')) as number }
-    )
-      .then(res => res.Size)
-      .catch(e => {
-        if (e.name === 'TimeoutError') {
-          logger.error(`Fetching size of ${cid.toString()} timed out!`)
-          throw new Error(`Fetching size of ${cid.toString()} timed out!`)
-        }
-        throw e
-      })
   }
 
   getMetaSize (hash: string): Promise<number> {
