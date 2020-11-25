@@ -19,7 +19,7 @@ export default function (storageProvider: ProviderManager): GetFileSizeRouteHand
     try {
       return res.json({
         fileHash: hash,
-        fileSizeBytes: await storageProvider.getActualFileSize(hash)
+        fileSizeBytes: await storageProvider.getMetaFileSize(hash)
       })
     } catch (e) {
       res.status(500).json({
