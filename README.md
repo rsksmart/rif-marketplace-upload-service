@@ -41,8 +41,6 @@ It is build using [FeathersJS](https://www.feathersjs.com)
 
 This api allow you to upload file
 
-#### Offers endpoint
-
 ```
 POST: /upload
 
@@ -61,6 +59,22 @@ MultiPartFormData: {
 {
   message: 'File uploaded',
   fileHash: 'Qmasv234cksldmfFileHash'
+}
+```
+
+### Get File Size
+
+This api allow you to get size of the file by file hash
+
+```
+GET: /fileSize?hash=<fileHash>
+```
+
+
+```json5
+{
+  fileHash: 'Qmasv234cksldmfFileHash',
+  fileSizeBytes: 10231
 }
 ```
 ## Configuration
