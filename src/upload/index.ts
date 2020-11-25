@@ -8,9 +8,10 @@ import { loggingFactory } from '../logger'
 import { errorHandler, waitForReadyApp } from '../utils'
 import UploadJob from './upload.model'
 import uploadHandler from './upload.handler'
+import getFileSizeHandler from './getFileSize.handler'
 
 export const UPLOAD_FOLDER = 'uploads'
-const logger = loggingFactory('upload')
+const logger = loggingFactory('upload-service')
 
 const storage = multer.diskStorage({
   destination (req, file, cb) {
@@ -46,6 +47,12 @@ const upload: UploadService = {
       ServiceAddresses.Upload,
       uploadMiddleware.array('files'),
       errorHandler(uploadHandler(providerManager, libp2p), logger)
+    )
+
+    // Init get file size route
+    app.get(
+      ServiceAddresses.FileSize,
+      errorHandler(getFileSizeHandler(providerManager), logger)
     )
 
     return {

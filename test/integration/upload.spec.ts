@@ -25,6 +25,31 @@ const expect = chai.expect
 
 const contractAddress = '0xTestContractAddress'
 
+function getFileSize (hash?: string): Promise<any> {
+  const options = {
+    method: 'GET',
+    host: 'localhost',
+    port: config.get<number>('port'),
+    path: ServiceAddresses.FileSize + `?${hash ? 'hash=' + hash : ''}`
+  }
+  return new Promise((resolve, reject) => {
+    const req = request(options, function (res) {
+      let body = ''
+      res.on('data', function (chunk) {
+        body += chunk
+      })
+      res.on('end', function () {
+        if (res.statusCode !== 200) {
+          // eslint-disable-next-line prefer-promise-reject-errors
+          reject({ error: JSON.parse(body), statusCode: res.statusCode })
+        }
+        resolve(JSON.parse(body))
+      })
+    })
+    req.end()
+  })
+}
+
 function upload (provider: string, account: string, peerId?: string, filesPath?: string[]): Promise<any> {
   const form = new FormData()
 
@@ -170,6 +195,8 @@ describe('Upload service', function () {
       expect(job.fileHash).to.be.eql(`/ipfs/${response.fileHash}`)
       expect(job.status).to.be.eql(UploadJobStatus.WAITING_FOR_PINNING)
       expect(await isPinned(ipfs, new CID(response.fileHash))).to.be.true()
+      const fileSize = await ipfs.object.stat(new CID(response.fileHash))
+      expect(fileSize.CumulativeSize).to.be.eql(response.fileSize)
       await ipfs.pin.rm(new CID(response.fileHash))
     })
     it('should upload file and unpin when receive pinned message', async () => {
@@ -217,6 +244,34 @@ describe('Upload service', function () {
       const missedParams = ['peerId', 'account']
       try {
         await upload(testApp.providerAddress, '', undefined, ['./test/integration/files/testFile.txt'])
+      } catch (e) {
+        expect(e.statusCode).to.be.eql(422)
+        expect(e.error.error).to.be.eql(`Params ${missedParams} required`)
+      }
+    })
+  })
+  describe('Get file size API', () => {
+    it('should be able to retrieve file size', async () => {
+      const response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/testFile.txt'])
+      expect(response.message).to.be.eql('Files uploaded')
+      expect(response.fileHash).to.be.not.null()
+      const jobs = await UploadJob.findAll()
+      expect(jobs.length).to.be.eql(1)
+      expect(await isPinned(ipfs, new CID(response.fileHash))).to.be.true()
+
+      const sizeRes = await getFileSize('/ipfs/' + response.fileHash)
+      const sizeFromIpfs = await ipfs.object.stat!(new CID(response.fileHash))
+
+      expect(typeof sizeRes.fileSizeBytes).to.be.eql('number')
+      expect(sizeRes.fileSizeBytes).to.be.eql(sizeFromIpfs.CumulativeSize)
+      expect(sizeRes.fileHash).to.be.eql('/ipfs/' + response.fileHash)
+
+      await ipfs.pin.rm(new CID(response.fileHash))
+    })
+    it('should throw if no required params provided', async () => {
+      const missedParams = ['hash']
+      try {
+        await getFileSize()
       } catch (e) {
         expect(e.statusCode).to.be.eql(422)
         expect(e.error.error).to.be.eql(`Params ${missedParams} required`)

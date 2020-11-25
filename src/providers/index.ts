@@ -56,6 +56,18 @@ export class ProviderManager implements Provider {
       throw new Error(`Unknown type of hash ${hash}`)
     }
   }
+
+  public getMetaFileSize (hash: string): Promise<number> {
+    if (hash.startsWith('/ipfs/')) {
+      if (!this.ipfs) {
+        throw new Error('IPFS provider was not registered!')
+      }
+
+      return this.ipfs.getMetaSize(hash)
+    } else {
+      throw new Error(`Unknown type of hash ${hash}`)
+    }
+  }
 }
 
 async function initIpfs (app: Application) {

@@ -19,6 +19,7 @@
 
   // ipfs
   ipfs: {
+    sizeFetchTimeout: '2m',
     clientOptions: {
       // The default value for go-ipfs
       url: 'http://localhost:5001',
