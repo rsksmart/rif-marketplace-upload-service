@@ -29,6 +29,7 @@ EXPOSE 3030
 
 ENV RIFMUS_DB '/srv/data/db.sqlite'
 ENV NODE_ENV 'production'
+ENV LOG_NO_COLORS 'true'
 
 ENTRYPOINT [ "./bin/entrypoint" ]
 
