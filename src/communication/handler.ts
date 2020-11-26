@@ -27,7 +27,7 @@ async function hashPinnedHandler (
   )
 
   if (!job) {
-    roomLogger.error(`Job for file ${message.payload.hash} not found`)
+    roomLogger.debug(`Job for file ${message.payload.hash} not found`)
     return
   }
 

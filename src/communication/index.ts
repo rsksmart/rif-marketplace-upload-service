@@ -64,6 +64,7 @@ export function subscribeForOffer (
     if (await handler(message as CommsMessage<CommsPayloads>)) {
       // If handler returns true, than it signals no further messages are expected
       // and we remove this handler.
+      logger.debug('Unsubscribe from room `onMessage` handler')
       unsubscribe()
     }
   })
