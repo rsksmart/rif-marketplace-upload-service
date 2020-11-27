@@ -1,3 +1,21 @@
+<a name="0.1.0-dev.3"></a>
+# [0.1.0-dev.3](https://github.com/rsksmart/rif-storage-upload-service/compare/v0.1.0-dev.1...v0.1.0-dev.3) (2020-11-27)
+
+
+### Bug Fixes
+
+* make contract address lower case in room topic computation ([#40](https://github.com/rsksmart/rif-storage-upload-service/issues/40)) ([d280e89](https://github.com/rsksmart/rif-storage-upload-service/commit/d280e89))
+* upload params validation ([#37](https://github.com/rsksmart/rif-storage-upload-service/issues/37)) ([6c336af](https://github.com/rsksmart/rif-storage-upload-service/commit/6c336af))
+* **core:** logs colors handling ([#49](https://github.com/rsksmart/rif-storage-upload-service/issues/49)) ([c382244](https://github.com/rsksmart/rif-storage-upload-service/commit/c382244))
+
+
+### Features
+
+* add api to check file size ([#47](https://github.com/rsksmart/rif-storage-upload-service/issues/47)) ([f2e65c3](https://github.com/rsksmart/rif-storage-upload-service/commit/f2e65c3))
+* adjust topic computation ([#20](https://github.com/rsksmart/rif-storage-upload-service/issues/20)) ([6d8df67](https://github.com/rsksmart/rif-storage-upload-service/commit/6d8df67))
+
+
+
 <a name="0.1.0-dev.2"></a>
 # [0.1.0-dev.2](https://github.com/rsksmart/rif-storage-upload-service/compare/v0.1.0-dev.1...v0.1.0-dev.2) (2020-11-18)
 
