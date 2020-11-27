@@ -1,6 +1,6 @@
 {
   "name": "@rsksmart/rif-marketplace-upload-service",
-  "version": "0.1.0-dev.2",
+  "version": "0.1.0-dev.3",
   "description": "Service for Uploading files to Storage Providers(IPFS, Swarm, ...)",
   "keywords": [
     "RIF",
@@ -121,8 +121,9 @@
   "types": "types/index.d.ts",
   "contributors": [
     "Adam Uhlíř <adam@uhlir.dev>",
-    "Nazar Duchak <nazar@iovlabs.org>",
+    "Julian M. Rodriguez <56316686+julianmrodri@users.noreply.github.com>",
     "Nazar Duchak <41945483+nduchak@users.noreply.github.com>",
+    "Nazar Duchak <nazar@iovlabs.org>",
     "dependabot-preview[bot] <27856297+dependabot-preview[bot]@users.noreply.github.com>"
   ],
   "oclif": {
