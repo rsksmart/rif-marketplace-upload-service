@@ -39,10 +39,10 @@ export default function (storageProvider: ProviderManager, libp2p: Libp2p): Uplo
 
     // Create upload job
     const job = await UploadJob.create({
-      offerId,
+      offerId: offerId.toLowerCase(),
       peerId,
       account,
-      contractAddress,
+      contractAddress: contractAddress.toLowerCase(),
       meta: { files: req.files.map((f: any) => f.originalname) },
       status: UploadJobStatus.UPLOADING
     })
@@ -69,7 +69,7 @@ export default function (storageProvider: ProviderManager, libp2p: Libp2p): Uplo
     const fileSize = await storageProvider.getMetaFileSize(job.fileHash)
 
     // Register room
-    await subscribeForOffer(libp2p, storageProvider, offerId, peerId, contractAddress)
+    await subscribeForOffer(libp2p, storageProvider, offerId.toLowerCase(), peerId, contractAddress.toLowerCase())
 
     return res.json({
       message: 'Files uploaded',
