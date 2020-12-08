@@ -191,7 +191,7 @@ describe('Upload service', function () {
       const [job] = jobs
       expect(job.account).to.be.eql('testAccount')
       expect(job.peerId).to.be.eql(testApp.peerId?.id as string)
-      expect(job.offerId).to.be.eql(testApp.providerAddress)
+      expect(job.offerId).to.be.eql(testApp.providerAddress.toLowerCase())
       expect(job.fileHash).to.be.eql(`/ipfs/${response.fileHash}`)
       expect(job.status).to.be.eql(UploadJobStatus.WAITING_FOR_PINNING)
       expect(await isPinned(ipfs, new CID(response.fileHash))).to.be.true()
@@ -208,7 +208,7 @@ describe('Upload service', function () {
       const [job] = jobs
       expect(job.account).to.be.eql('testAccount')
       expect(job.peerId).to.be.eql(testApp.peerId?.id as string)
-      expect(job.offerId).to.be.eql(testApp.providerAddress)
+      expect(job.offerId).to.be.eql(testApp.providerAddress.toLowerCase())
       expect(job.fileHash).to.be.eql(`/ipfs/${response.fileHash}`)
       expect(job.status).to.be.eql(UploadJobStatus.WAITING_FOR_PINNING)
       expect(await isPinned(ipfs, new CID(response.fileHash))).to.be.true()
