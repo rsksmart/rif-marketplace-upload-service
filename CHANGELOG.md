@@ -1,3 +1,13 @@
+<a name="0.1.0"></a>
+# [0.1.0](https://github.com/rsksmart/rif-storage-upload-service/compare/v0.1.0-dev.3...v0.1.0) (2020-12-14)
+
+
+### Bug Fixes
+
+* lower case addresses ([#60](https://github.com/rsksmart/rif-storage-upload-service/issues/60)) ([5139e2f](https://github.com/rsksmart/rif-storage-upload-service/commit/5139e2f))
+
+
+
 <a name="0.1.0-dev.3"></a>
 # [0.1.0-dev.3](https://github.com/rsksmart/rif-storage-upload-service/compare/v0.1.0-dev.1...v0.1.0-dev.3) (2020-11-27)
 
