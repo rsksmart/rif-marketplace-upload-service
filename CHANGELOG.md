@@ -1,3 +1,8 @@
+<a name="0.1.1"></a>
+## [0.1.1](https://github.com/rsksmart/rif-storage-upload-service/compare/v0.1.0...v0.1.1) (2020-12-21)
+
+
+
 <a name="0.1.0"></a>
 # [0.1.0](https://github.com/rsksmart/rif-storage-upload-service/compare/v0.1.0-dev.3...v0.1.0) (2020-12-14)
 
