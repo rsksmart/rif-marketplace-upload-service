@@ -61,7 +61,7 @@
     "@oclif/errors": "^1.3.4",
     "@oclif/parser": "^3.8.5",
     "@oclif/plugin-help": "^3.2.0",
-    "@rsksmart/rif-communications-pubsub": "rsksmart/rif-communications-pubsub#fix/ws-fix",
+    "@rsksmart/rif-communications-pubsub": "github:rsksmart/rif-communications-pubsub#fix/ws-fix",
     "cids": "1.0.2",
     "colors": "^1.4.0",
     "compression": "^1.7.4",
