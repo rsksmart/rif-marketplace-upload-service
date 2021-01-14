@@ -98,7 +98,9 @@ export async function stopComms (libp2p: Libp2p): Promise<void> {
     leaveRoom(topic)
   }
 
-  libp2p && await libp2p.stop()
+  if (libp2p) {
+    await libp2p.stop()
+  }
 }
 
 export default function (app: Application): void {
