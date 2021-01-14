@@ -25,7 +25,7 @@ export default {
 
 export default class DbMigrationCommand extends BaseCLICommand {
   static hidden: boolean;
-  static flags = {
+  static flags: any = {
     ...BaseCLICommand.flags,
     db: flags.string({ description: 'database connection URI', env: 'RIFM_DB' }),
     up: flags.boolean({
@@ -131,11 +131,11 @@ export default class DbMigrationCommand extends BaseCLICommand {
     }
 
     if (parsedFlags.up) {
-      await this.migrate(parsedFlags.migration, parsedFlags)
+      await this.migrate(parsedFlags.migration, parsedFlags as any)
     }
 
     if (parsedFlags.down) {
-      await this.undo(parsedFlags.migration, parsedFlags)
+      await this.undo(parsedFlags.migration, parsedFlags as any)
     }
 
     this.exit()
