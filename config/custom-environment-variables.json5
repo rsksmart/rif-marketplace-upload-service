@@ -11,6 +11,7 @@
   },
 
   comms: {
+    enabled: 'RIFMUS_COMMS_ENABLED',
     libp2p: {
       addresses: {
         listen: {

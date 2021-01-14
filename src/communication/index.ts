@@ -11,6 +11,7 @@ import { ProviderManager } from '../providers'
 import { errorHandler } from '../utils'
 
 const logger = loggingFactory('communication')
+const COMMS_ENABLED = config.get<boolean>('comms.enabled')
 
 // (offerId -> room) MAP
 export const rooms = new Map<string, Room>()
@@ -41,6 +42,10 @@ export function subscribeForOffer (
   peerId: string,
   contractAddress: string
 ): void {
+  if (!COMMS_ENABLED) {
+    return
+  }
+
   if (!libp2p) {
     throw new Error('Libp2p not initialized')
   }
@@ -93,9 +98,11 @@ export async function stopComms (libp2p: Libp2p): Promise<void> {
     leaveRoom(topic)
   }
 
-  await libp2p.stop()
+  libp2p && await libp2p.stop()
 }
 
 export default function (app: Application): void {
-  app.set('initComms', initComms(app))
+  if (COMMS_ENABLED) {
+    app.set('initComms', initComms(app))
+  }
 }
