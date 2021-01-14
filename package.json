@@ -38,7 +38,7 @@
   "scripts": {
     "prepack": "tasegir run --watch node_modules/.bin/oclif-dev -- manifest && sed -i '' 's#\"./src/cli\"#\"./lib/cli\"#g' package.json",
     "postpack": "sed -i '' 's#\"./lib/cli\"#\"./src/cli\"#g' package.json",
-    "bin": "tasegir run ./bin/run -- ",
+    "bin": "cross-env ALLOW_CONFIG_MUTATIONS=true tasegir run ./bin/run -- ",
     "init": "./init.sh",
     "compile": "tasegir compile",
     "ipfs": "cross-env IPFS_PATH='./.repos/upload' ipfs",
