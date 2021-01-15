@@ -10,6 +10,7 @@
   },
   fileSizeLimit: 5000,
   comms: {
+    enabled: true,
     libp2p: {
       config: {
         peerDiscovery: {
