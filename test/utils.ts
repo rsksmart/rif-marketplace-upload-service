@@ -7,8 +7,8 @@ import { createLibP2P, Message, Room } from '@rsksmart/rif-communications-pubsub
 import { getRoomTopic } from '../src/communication'
 import { loggingFactory } from '../src/logger'
 
-export function sleep<T> (ms: number, ...args: T[]): Promise<T> {
-  return new Promise(resolve => setTimeout(() => resolve(...args), ms))
+export function sleep<T> (ms: number, arg?: T): Promise<T | undefined> {
+  return new Promise(resolve => setTimeout(() => resolve(arg), ms))
 }
 
 export function rmDir (folder: string): void {
