@@ -1,12 +1,11 @@
 import ipfsClient, {
-  CID,
   ClientOptions,
-  IpfsClient,
   IpfsObject,
   IpfsResult,
   RegularFiles,
   Version
 } from 'ipfs-http-client'
+import CID from 'cids'
 import * as semver from 'semver'
 import config from 'config'
 import parse from 'parse-duration'
@@ -16,6 +15,8 @@ import { NotPinnedError } from '../errors'
 import { loggingFactory } from '../logger'
 
 const logger = loggingFactory('ipfs')
+
+type IpfsClient = ReturnType<typeof ipfsClient>
 
 const REQUIRED_IPFS_VERSION = '>=0.7.0'
 const NOT_PINNED_ERROR_MSG = 'not pinned or pinned indirectly'
@@ -95,8 +96,8 @@ export class IpfsProvider implements Provider {
       cid,
       { timeout: parse(config.get<string>('ipfs.sizeFetchTimeout')) as number }
     )
-      .then(res => res.CumulativeSize)
-      .catch(e => {
+      .then((res: Record<'CumulativeSize', number>) => res.CumulativeSize)
+      .catch((e: any) => {
         if (e.name === 'TimeoutError') {
           logger.error(`Fetching size of ${cid.toString()} timed out!`)
           throw new Error(`Fetching size of ${cid.toString()} timed out!`)
