@@ -1,5 +1,5 @@
 import { createLibP2P, Message, Room } from '@rsksmart/rif-communications-pubsub'
-import Libp2p from 'libp2p'
+import Libp2p, { Libp2pOptions } from 'libp2p'
 import config from 'config'
 import parse from 'parse-duration'
 import PeerId from 'peer-id'
@@ -21,8 +21,8 @@ export function getRoomTopic (offerId: string, contractAddress: string): string 
 }
 
 export function leaveRoom (topic: string): void {
-    rooms.get(topic)?.leave()
-    rooms.delete(topic)
+  rooms.get(topic)?.leave()
+  rooms.delete(topic)
 }
 
 export function getOrCreateRoom (topic: string, libp2p: Libp2p, roomLogger: Logger): Room {
@@ -80,7 +80,7 @@ export function subscribeForOffer (
 }
 
 export async function initLibp2p (): Promise<Libp2p> {
-  const libp2pConf = config.get<object>('comms.libp2p')
+  const libp2pConf = config.get<Libp2pOptions>('comms.libp2p')
   logger.info('Spawn libp2p node')
   return createLibP2P({ ...libp2pConf, peerId: await PeerId.create() })
 }

@@ -21,7 +21,7 @@ export default class StartServer extends BaseCLICommand {
     db: flags.string({ description: 'database connection URI', env: 'RIFM_DB' })
   }
 
-  private buildConfigObject (flags: Flags<typeof StartServer>): object {
+  private buildConfigObject (flags: Flags<typeof StartServer>): Record<any, any> {
     const output: Config = {}
 
     if (flags.db) {

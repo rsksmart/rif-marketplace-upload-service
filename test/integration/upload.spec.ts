@@ -128,16 +128,16 @@ describe('Upload service', function () {
     before(() => {
       gcInterval = config.get<string>('gc.interval')
       jobTtl = config.get<string>('gc.jobTtl')
-      // @ts-ignore
+      // @ts-ignore: Config not typed
       config.gc.interval = '1000ms'
-      // @ts-ignore
+      // @ts-ignore: Config not typed
       config.gc.jobTtl = '1000ms'
       gc = jobsGC(testApp.app!.app)
     })
     after(() => {
-      // @ts-ignore
+      // @ts-ignore: Config not typed
       config.gc.interval = gcInterval
-      // @ts-ignore
+      // @ts-ignore: Config not typed
       config.gc.jobTtl = jobTtl
       gc.stop()
     })
