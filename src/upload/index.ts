@@ -9,6 +9,7 @@ import { errorHandler, waitForReadyApp } from '../utils'
 import UploadJob from './upload.model'
 import uploadHandler from './upload.handler'
 import getFileSizeHandler from './getFileSize.handler'
+import getSizeLimitHandler from './getSizeLimit.handler'
 
 export const UPLOAD_FOLDER = 'uploads'
 const logger = loggingFactory('upload-service')
@@ -53,6 +54,11 @@ const upload: UploadService = {
     app.get(
       ServiceAddresses.FileSize,
       errorHandler(getFileSizeHandler(providerManager), logger)
+    )
+
+    app.get(
+      ServiceAddresses.FileSizeLimit,
+      errorHandler(getSizeLimitHandler(), logger)
     )
 
     return {

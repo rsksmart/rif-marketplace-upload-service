@@ -15,6 +15,7 @@ export function isSupportedServices (value: any): value is SupportedServices {
 export enum ServiceAddresses {
   Upload = '/upload',
   FileSize = '/fileSize',
+  FileSizeLimit = '/fileSizeLimit'
 }
 
 // The application instance type that will be used everywhere else

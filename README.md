@@ -77,6 +77,22 @@ GET: /fileSize?hash=<fileHash>
   fileSizeBytes: 10231
 }
 ```
+
+### Get File Size Limit
+
+This endpoint exposes the max supported size in bytes
+
+```
+GET: /fileSizeLimit
+```
+
+
+```json5
+{
+  fileSizeLimit: 1073741824
+}
+```
+
 ## Configuration
 
 Required reading: [node-config docs](https://github.com/lorenwest/node-config/wiki/Configuration-Files)
