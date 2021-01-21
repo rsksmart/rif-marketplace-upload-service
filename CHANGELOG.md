@@ -1,3 +1,19 @@
+<a name="0.2.0"></a>
+# [0.2.0](https://github.com/rsksmart/rif-storage-upload-service/compare/v0.1.1...v0.2.0) (2021-01-21)
+
+
+### Bug Fixes
+
+* temporary fix for config lib entrypoint ([2c357c3](https://github.com/rsksmart/rif-storage-upload-service/commit/2c357c3))
+
+
+### Features
+
+* add ability to disable libp2p comms ([#96](https://github.com/rsksmart/rif-storage-upload-service/issues/96)) ([2e56dc3](https://github.com/rsksmart/rif-storage-upload-service/commit/2e56dc3))
+* adds file size limit endpoint ([#99](https://github.com/rsksmart/rif-storage-upload-service/issues/99)) ([c88d262](https://github.com/rsksmart/rif-storage-upload-service/commit/c88d262))
+
+
+
 <a name="0.1.1"></a>
 ## [0.1.1](https://github.com/rsksmart/rif-storage-upload-service/compare/v0.1.0...v0.1.1) (2020-12-21)
 
