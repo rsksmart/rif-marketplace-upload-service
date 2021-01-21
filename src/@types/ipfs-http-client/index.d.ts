@@ -12,7 +12,7 @@ declare module 'ipfs-http-client' {
 
   interface Options {
     timeout?: number | string
-    headers?: object
+    headers?: Record<any, any>
     signal?: any
   }
 
@@ -105,7 +105,7 @@ declare module 'ipfs-http-client' {
   }
 
   export interface MiscellaneousCommands {
-    send (options: object, cb: () => void): void
+    send (options: Record<any, any>, cb: () => void): void
     id (): Promise<Identity>
     version (): Promise<Version>
   }
@@ -168,7 +168,7 @@ declare module 'ipfs-http-client' {
     protocol?: string
     'api-path'?: string
     'user-agent'?: string
-    headers?: object
+    headers?: Record<any, any>
     timeout?: number | string
   }
 

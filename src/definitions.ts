@@ -1,7 +1,8 @@
 import { Application as ExpressFeathers } from '@feathersjs/express'
 import * as Parser from '@oclif/parser'
-import { ClientOptions as IpfsOptions, IpfsObject, IpfsResult, RegularFiles } from 'ipfs-http-client'
-import type { Options as Libp2pOptions } from 'libp2p'
+import { ClientOptions as IpfsOptions } from 'ipfs-http-client/src/lib/core'
+import { IpfsObject, IpfsResult, RegularFiles } from 'ipfs-http-client'
+import type { Libp2pOptions } from 'libp2p'
 
 export enum SupportedServices {
   UPLOAD = 'upload'
@@ -77,22 +78,22 @@ export type Flags<T> = Options<T>['flags']
  */
 export interface Logger {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  critical (message: string | Error | object, ...meta: any[]): never
+  critical (message: string | Error | Record<string, unknown>, ...meta: any[]): never
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  error (message: string | Error | object, ...meta: any[]): void
+  error (message: string | Error | Record<string, unknown>, ...meta: any[]): void
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  warn (message: string | object, ...meta: any[]): void
+  warn (message: string | Record<string, unknown>, ...meta: any[]): void
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  info (message: string | object, ...meta: any[]): void
+  info (message: string | Record<string, unknown>, ...meta: any[]): void
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  verbose (message: string | object, ...meta: any[]): void
+  verbose (message: string | Record<string, unknown>, ...meta: any[]): void
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  debug (message: string | object, ...meta: any[]): void
+  debug (message: string | Record<string, unknown>, ...meta: any[]): void
 }
 
 /****************************************************************************************

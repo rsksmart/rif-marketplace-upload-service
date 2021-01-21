@@ -45,7 +45,7 @@ describe('GC', function () {
   })
 
   it('should throw if jobTtl not provided', async () => {
-    // @ts-ignore
+    // @ts-ignore: Config not typed
     config.gc.jobTtl = null
 
     try {
@@ -54,11 +54,11 @@ describe('GC', function () {
       expect(e.message).to.be.eql('Invalid jobs ttl value')
       expect(providerRmSpy.notCalled).to.be.eql(true)
     }
-    // @ts-ignore
+    // @ts-ignore: Config not typed
     config.gc.jobTtl = jobTtl
   })
   it('should remove expired jobs', async () => {
-    // @ts-ignore
+    // @ts-ignore: Config not typed
     config.gc.jobTtl = '100ms'
 
     const contractAddress = '0xTestContractAddress'
@@ -82,7 +82,7 @@ describe('GC', function () {
     expect(providerRmSpy.calledOnceWith(jobs[2].fileHash))
     expect(leaveRoomSpy.calledWith(getRoomTopic('test', 'test')))
 
-    // @ts-ignore
+    // @ts-ignore: Config not typed
     config.gc.jobTtl = jobTtl
   })
 })
