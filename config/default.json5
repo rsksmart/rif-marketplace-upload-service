@@ -11,10 +11,17 @@
   },
 
   gc: {
-    jobTtl: '4h',
-    interval: '1h'
+    jobs: {
+      ttl: '4h',
+      interval: '1h'
+    },
+    clients: {
+      ttl: '1h',
+      interval: '5m'
+    }
   },
 
+  uploadLimitPerPeriod: 5, // Count of uploads attempts per period(gc.clients.ttl)
   fileSizeLimit: 1073741824, // 1 gb in bytes
 
   // ipfs

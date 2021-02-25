@@ -7,6 +7,7 @@ import { Application } from './definitions'
 import { NotPinnedError } from './errors'
 import { loggingFactory } from './logger'
 import { ProviderManager } from './providers'
+import UploadClients from './upload/clients.model'
 import UploadJob from './upload/upload.model'
 
 const logger = loggingFactory('jobs:gc')
@@ -14,7 +15,7 @@ const logger = loggingFactory('jobs:gc')
 export async function gcFiles (storageProvider: ProviderManager): Promise<void> {
   let jobsTtl
   try {
-    jobsTtl = parse(config.get<string>('gc.jobTtl'))
+    jobsTtl = parse(config.get<string>('gc.jobs.ttl'))
   } catch (e) {
     throw new Error('Invalid jobs ttl value')
   }
@@ -49,15 +50,51 @@ export async function gcFiles (storageProvider: ProviderManager): Promise<void> 
   }
 }
 
-export default function (app: Application): { stop: () => void } {
-  const gcInterval = parse(config.get<string>('gc.interval'))
+export async function gcClients (): Promise<void> {
+  let clientsTtl
+  try {
+    clientsTtl = parse(config.get<string>('gc.clients.ttl'))
+  } catch (e) {
+    throw new Error('Invalid jobs ttl value')
+  }
+  await UploadClients.findAll({
+    where: {
+      createdAt: { [Op.lte]: Date.now() - clientsTtl! }
+    }
+  })
+}
+
+export function runJobsGc (app: Application): NodeJS.Timeout {
+  const gcInterval = parse(config.get<string>('gc.jobs.interval'))
 
   if (!gcInterval) {
     throw new Error('Invalid GC interval value')
   }
 
-  logger.info(`GC started with interval ${config.get('gc.interval')}`)
+  logger.info(`Jobs GC started with interval ${config.get('gc.jobs.interval')}`)
   const storageProvider = app.get('storage')
-  const interval = setInterval(() => gcFiles(storageProvider), gcInterval)
-  return { stop: () => clearInterval(interval) }
+  return setInterval(() => gcFiles(storageProvider), gcInterval)
+}
+
+export function runClientsGc (): NodeJS.Timeout {
+  const gcInterval = parse(config.get<string>('gc.clients.interval'))
+
+  if (!gcInterval) {
+    throw new Error('Invalid GC interval value for "Clients" job')
+  }
+
+  logger.info(`"Clients" GC started with interval ${config.get('gc.clients.interval')}`)
+  return setInterval(() => gcClients(), gcInterval)
+}
+
+export default function (app: Application): { stop: () => void } {
+  const jobsIntervalId = runJobsGc(app)
+  const clientIntervalId = runClientsGc()
+
+  return {
+    stop: () => {
+      clearInterval(jobsIntervalId)
+      clearInterval(clientIntervalId)
+    }
+  }
 }
