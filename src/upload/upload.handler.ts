@@ -20,15 +20,23 @@ async function unlinkFiles (files: any[]): Promise<void> {
   }
 }
 
+function getCallerIP (request: any) {
+  return request.headers['x-forwarded-for'] ||
+      request.connection.remoteAddress ||
+      request.socket.remoteAddress ||
+      request.connection.socket.remoteAddress ||
+      request.ip
+}
+
 async function isClientAllowedToUpload (req: any): Promise<boolean> {
-  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+  const ip = getCallerIP(req)
   const client = await UploadClients.findOne({ where: { ip } })
 
   return !client || client.uploads < config.get<number>('uploadLimitPerPeriod')
 }
 
-async function increaseClientUploadCounter(req: any): Promise<void> {
-  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+async function increaseClientUploadCounter (req: any): Promise<void> {
+  const ip = getCallerIP(req)
   const client = await UploadClients.findOne({ where: { ip } })
 
   if (!client) {
@@ -56,9 +64,9 @@ export default function (storageProvider: ProviderManager, libp2p: Libp2p): Uplo
       })
     }
 
-    if (await isClientAllowedToUpload(req)) {
+    if (!await isClientAllowedToUpload(req)) {
       return res.status(400).json({
-        error: 'Mot allowed'
+        error: 'Not allowed'
       })
     }
 

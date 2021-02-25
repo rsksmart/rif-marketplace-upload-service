@@ -5,7 +5,7 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript'
   tableName: 'upload_clients'
 })
 export default class UploadClients extends Model {
-  @Column({ allowNull: false })
+  @Column({ allowNull: false, primaryKey: true })
   ip!: string
 
   @Column({ allowNull: false })

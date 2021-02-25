@@ -57,11 +57,12 @@ export async function gcClients (): Promise<void> {
   } catch (e) {
     throw new Error('Invalid jobs ttl value')
   }
-  await UploadClients.findAll({
+  const destroyed = await UploadClients.destroy({
     where: {
       createdAt: { [Op.lte]: Date.now() - clientsTtl! }
     }
   })
+  logger.debug(`"Clients" GC: destroyed ${destroyed} clients`)
 }
 
 export function runJobsGc (app: Application): NodeJS.Timeout {
