@@ -2,6 +2,7 @@ import compress from 'compression'
 import helmet from 'helmet'
 import cors, { CorsOptionsDelegate } from 'cors'
 import config from 'config'
+import requestIp from 'request-ip'
 
 import feathers from '@feathersjs/feathers'
 import express from '@feathersjs/express'
@@ -32,6 +33,9 @@ export async function appFactory (): Promise<{ app: Application, stop: () => Pro
   app.use(compress())
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
+
+  // Enable IP mdlw
+  app.use(requestIp.mw())
 
   // Set up Plugins and providers
   app.configure(express.rest())

@@ -20,23 +20,16 @@ async function unlinkFiles (files: any[]): Promise<void> {
   }
 }
 
-function getCallerIP (request: any) {
-  return request.headers['x-forwarded-for'] ||
-      request.connection.remoteAddress ||
-      request.socket.remoteAddress ||
-      request.connection.socket.remoteAddress ||
-      request.ip
-}
-
 async function isClientAllowedToUpload (req: any): Promise<boolean> {
-  const ip = getCallerIP(req)
+  const ip = req.clientIp
+  logger.debug(`Client IP address = ${ip}`)
   const client = await UploadClients.findOne({ where: { ip } })
 
   return !client || client.uploads < config.get<number>('uploadLimitPerPeriod')
 }
 
 async function increaseClientUploadCounter (req: any): Promise<void> {
-  const ip = getCallerIP(req)
+  const ip = req.clientIp
   const client = await UploadClients.findOne({ where: { ip } })
 
   if (!client) {
