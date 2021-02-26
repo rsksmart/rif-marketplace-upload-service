@@ -3,12 +3,12 @@ import path from 'path'
 import Libp2p from 'libp2p'
 import config from 'config'
 
-import { subscribeForOffer } from '../communication'
-import { UploadJobStatus } from '../definitions'
-import { loggingFactory } from '../logger'
-import { ProviderManager } from '../providers'
-import UploadJob from './upload.model'
-import UploadClients from './clients.model'
+import { subscribeForOffer } from '../../communication'
+import { UploadJobStatus } from '../../definitions'
+import { loggingFactory } from '../../logger'
+import { ProviderManager } from '../../providers'
+import UploadJob from '../model/upload.model'
+import UploadClients from '../model/clients.model'
 
 const logger = loggingFactory('upload.handler')
 type UploadRouteHandler = (req: any, res: any) => Promise<void>

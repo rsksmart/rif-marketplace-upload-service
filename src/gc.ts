@@ -7,8 +7,8 @@ import { Application } from './definitions'
 import { NotPinnedError } from './errors'
 import { loggingFactory } from './logger'
 import { ProviderManager } from './providers'
-import UploadClients from './upload/clients.model'
-import UploadJob from './upload/upload.model'
+import UploadClients from './upload/model/clients.model'
+import UploadJob from './upload/model/upload.model'
 
 const logger = loggingFactory('jobs:gc')
 

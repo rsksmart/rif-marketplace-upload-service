@@ -10,7 +10,7 @@ import { gcFiles } from '../../src/gc'
 import { ProviderManager } from '../../src/providers'
 import * as comms from '../../src/communication'
 import { sequelizeFactory } from '../../src/sequelize'
-import UploadJob from '../../src/upload/upload.model'
+import UploadJob from '../../src/upload/model/upload.model'
 import { sleep } from '../utils'
 
 chai.use(dirtyChai)
