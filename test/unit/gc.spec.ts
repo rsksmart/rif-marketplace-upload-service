@@ -18,7 +18,7 @@ const expect = chai.expect
 
 describe('GC', function () {
   this.timeout(1000)
-  const jobTtl = config.get('gc.jobTtl')
+  const jobTtl = config.get('gc.jobs.ttl')
   const leaveRoomSpy = sinon.spy()
   const providerRmSpy = sinon.spy()
   let provider: ProviderManager
@@ -46,7 +46,7 @@ describe('GC', function () {
 
   it('should throw if jobTtl not provided', async () => {
     // @ts-ignore: Config not typed
-    config.gc.jobTtl = null
+    config.gc.jobs.ttl = null
 
     try {
       await gcFiles(provider)
@@ -55,11 +55,11 @@ describe('GC', function () {
       expect(providerRmSpy.notCalled).to.be.eql(true)
     }
     // @ts-ignore: Config not typed
-    config.gc.jobTtl = jobTtl
+    config.gc.jobs.ttl = jobTtl
   })
   it('should remove expired jobs', async () => {
     // @ts-ignore: Config not typed
-    config.gc.jobTtl = '100ms'
+    config.gc.jobs.ttl = '100ms'
 
     const contractAddress = '0xTestContractAddress'
     rooms.set(getRoomTopic('test', contractAddress), {} as PubSubRoom)
@@ -83,6 +83,6 @@ describe('GC', function () {
     expect(leaveRoomSpy.calledWith(getRoomTopic('test', 'test')))
 
     // @ts-ignore: Config not typed
-    config.gc.jobTtl = jobTtl
+    config.gc.jobs.ttl = jobTtl
   })
 })

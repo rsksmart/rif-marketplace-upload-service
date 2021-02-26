@@ -8,6 +8,7 @@
       url: 'http://localhost:5002',
     }
   },
+  uploadLimitPerPeriod: 100,
   fileSizeLimit: 5000,
   comms: {
     enabled: true,

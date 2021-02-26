@@ -126,19 +126,19 @@ describe('Upload service', function () {
     let jobTtl: string
     let gc: { stop: () => void }
     before(() => {
-      gcInterval = config.get<string>('gc.interval')
-      jobTtl = config.get<string>('gc.jobTtl')
+      gcInterval = config.get<string>('gc.jobs.interval')
+      jobTtl = config.get<string>('gc.jobs.ttl')
       // @ts-ignore: Config not typed
-      config.gc.interval = '1000ms'
+      config.gc.jobs.interval = '1000ms'
       // @ts-ignore: Config not typed
-      config.gc.jobTtl = '1000ms'
+      config.gc.jobs.ttl = '1000ms'
       gc = jobsGC(testApp.app!.app)
     })
     after(() => {
       // @ts-ignore: Config not typed
-      config.gc.interval = gcInterval
+      config.gc.jobs.interval = gcInterval
       // @ts-ignore: Config not typed
-      config.gc.jobTtl = jobTtl
+      config.gc.jobs.ttl = jobTtl
       gc.stop()
     })
     afterEach(async () => {

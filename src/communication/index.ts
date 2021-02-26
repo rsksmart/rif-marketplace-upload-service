@@ -76,7 +76,7 @@ export function subscribeForOffer (
   room.on('peer:joined', (peer) => roomLogger.debug(`${topic}: peer ${peer} joined`))
   room.on('peer:left', (peer) => roomLogger.debug(`${topic}: peer ${peer} left`))
   room.on('error', (e) => roomLogger.error(e))
-  setTimeout(unsubscribe, parse(config.get<string>('gc.jobTtl')) as number)
+  setTimeout(unsubscribe, parse(config.get<string>('gc.jobs.ttl')) as number)
 }
 
 export async function initLibp2p (): Promise<Libp2p> {
