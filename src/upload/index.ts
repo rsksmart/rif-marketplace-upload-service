@@ -1,36 +1,18 @@
 import * as fs from 'fs'
-import multer from 'multer'
 import path from 'path'
-import config from 'config'
 
 import { Application, UploadService, ServiceAddresses } from '../definitions'
 import { loggingFactory } from '../logger'
 import { errorHandler, waitForReadyApp } from '../utils'
 import UploadJob from './model/upload.model'
-import uploadHandler from './handler/upload.handler'
+import uploadHandler, { UPLOAD_FOLDER } from './handler/upload.handler'
 import getFileSizeHandler from './handler/getFileSize.handler'
 import getSizeLimitHandler from './handler/getSizeLimit.handler'
 
-export const UPLOAD_FOLDER = 'uploads'
 const logger = loggingFactory('upload-service')
-
-const storage = multer.diskStorage({
-  destination (req, file, cb) {
-    cb(null, path.join(process.cwd(), UPLOAD_FOLDER))
-  },
-  filename (req, file, cb) {
-    cb(null, `${Date.now()}-${file.originalname.split('.')[0]}.${file.mimetype.split('/')[1]}`)
-  }
-})
 
 const upload: UploadService = {
   async initialize (app: Application): Promise<{ stop: () => Promise<void> }> {
-    const limits = {
-      fileSize: config.get<number>('fileSizeLimit')
-    }
-
-    const uploadMiddleware = multer({ storage, limits })
-
     await waitForReadyApp(app)
 
     const libp2p = app.get('libp2p')
@@ -46,7 +28,7 @@ const upload: UploadService = {
     // Init upload route
     app.post(
       ServiceAddresses.Upload,
-      uploadMiddleware.array('files'),
+      // uploadMiddleware.array('files'),
       errorHandler(uploadHandler(providerManager, libp2p), logger)
     )
 

@@ -13,7 +13,7 @@ import { rooms } from '../../src/communication'
 
 import { MessageCodesEnum, ServiceAddresses, UploadJobStatus } from '../../src/definitions'
 import { ProviderManager } from '../../src/providers'
-import { UPLOAD_FOLDER } from '../../src/upload'
+import { UPLOAD_FOLDER } from '../../src/upload/handler/upload.handler'
 import UploadClient from '../../src/upload/model/clients.model'
 import UploadJob from '../../src/upload/model/upload.model'
 import { duplicateObject } from '../../src/utils'
@@ -305,7 +305,8 @@ describe('Upload service', function () {
       try {
         await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/bigFile.txt'])
       } catch (e) {
-        expect(e.error.message).to.be.eql('File too large')
+        expect(e.error.error).to.be.eql('File too large')
+        expect(e.statusCode).to.be.eql(422)
       }
     })
     it('should throw if no required params provided', async () => {
