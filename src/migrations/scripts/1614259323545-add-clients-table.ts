@@ -14,7 +14,7 @@ const migrationCommands = function (transaction: any): Commands {
     {
       fn: 'createTable',
       params: [
-        'upload_clients',
+        'upload_client',
         {
           ip: {
             type: Sequelize.STRING,
@@ -50,7 +50,7 @@ const rollbackCommands = function (transaction: any): Commands {
     {
       fn: 'dropTable',
       params: [
-        'upload_clients', {
+        'upload_client', {
           transaction: transaction
         }
       ]

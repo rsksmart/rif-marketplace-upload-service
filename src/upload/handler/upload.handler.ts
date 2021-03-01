@@ -8,7 +8,7 @@ import { UploadJobStatus } from '../../definitions'
 import { loggingFactory } from '../../logger'
 import { ProviderManager } from '../../providers'
 import UploadJob from '../model/upload.model'
-import UploadClients from '../model/clients.model'
+import UploadClient from '../model/clients.model'
 
 const logger = loggingFactory('upload.handler')
 type UploadRouteHandler = (req: any, res: any) => Promise<void>
@@ -23,17 +23,17 @@ async function unlinkFiles (files: any[]): Promise<void> {
 async function isClientAllowedToUpload (req: any): Promise<boolean> {
   const ip = req.clientIp
   logger.debug(`Client IP address = ${ip}`)
-  const client = await UploadClients.findOne({ where: { ip } })
+  const client = await UploadClient.findOne({ where: { ip } })
 
   return !client || client.uploads < config.get<number>('uploadLimitPerPeriod')
 }
 
 async function increaseClientUploadCounter (req: any): Promise<void> {
   const ip = req.clientIp
-  const client = await UploadClients.findOne({ where: { ip } })
+  const client = await UploadClient.findOne({ where: { ip } })
 
   if (!client) {
-    await UploadClients.create({ ip, uploads: 1 })
+    await UploadClient.create({ ip, uploads: 1 })
   } else {
     client.uploads += 1
     await client.save()
@@ -46,6 +46,8 @@ export default function (storageProvider: ProviderManager, libp2p: Libp2p): Uplo
     const missedParams = ['offerId', 'peerId', 'account', 'contractAddress'].filter(k => !req.body[k])
 
     if (missedParams.length) {
+      await unlinkFiles(req.files)
+
       return res.status(422).json({
         error: `Params ${missedParams} required`
       })
@@ -58,6 +60,8 @@ export default function (storageProvider: ProviderManager, libp2p: Libp2p): Uplo
     }
 
     if (!await isClientAllowedToUpload(req)) {
+      await unlinkFiles(req.files)
+
       return res.status(400).json({
         error: 'Not allowed'
       })

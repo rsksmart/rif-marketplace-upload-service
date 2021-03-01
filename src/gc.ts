@@ -7,7 +7,7 @@ import { Application } from './definitions'
 import { NotPinnedError } from './errors'
 import { loggingFactory } from './logger'
 import { ProviderManager } from './providers'
-import UploadClients from './upload/model/clients.model'
+import UploadClient from './upload/model/clients.model'
 import UploadJob from './upload/model/upload.model'
 
 const logger = loggingFactory('jobs:gc')
@@ -55,14 +55,14 @@ export async function gcClients (): Promise<void> {
   try {
     clientsTtl = parse(config.get<string>('gc.clients.ttl'))
   } catch (e) {
-    throw new Error('Invalid jobs ttl value')
+    throw new Error('Invalid clients ttl value')
   }
-  const destroyed = await UploadClients.destroy({
+  const destroyed = await UploadClient.destroy({
     where: {
       createdAt: { [Op.lte]: Date.now() - clientsTtl! }
     }
   })
-  logger.debug(`"Clients" GC: destroyed ${destroyed} clients`)
+  logger.info(`"Clients" GC: destroyed ${destroyed} clients`)
 }
 
 export function runJobsGc (app: Application): NodeJS.Timeout {

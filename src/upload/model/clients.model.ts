@@ -1,10 +1,10 @@
-import { Table, Column, Model, DataType } from 'sequelize-typescript'
+import { Table, Column, Model } from 'sequelize-typescript'
 
 @Table({
   freezeTableName: true,
-  tableName: 'upload_clients'
+  tableName: 'upload_client'
 })
-export default class UploadClients extends Model {
+export default class UploadClient extends Model {
   @Column({ allowNull: false, primaryKey: true })
   ip!: string
 
