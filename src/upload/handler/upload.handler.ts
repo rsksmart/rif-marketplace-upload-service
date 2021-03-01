@@ -66,8 +66,6 @@ export default function (storageProvider: ProviderManager, libp2p: Libp2p): Uplo
         error: 'Not allowed'
       })
     }
-    // Increase Client upload counter
-    await increaseClientUploadCounter(req)
 
     uploadMiddleware(req, res, async (err: any) => {
       if (err) {
@@ -97,6 +95,9 @@ export default function (storageProvider: ProviderManager, libp2p: Libp2p): Uplo
           error: 'File needs to be provided.'
         })
       }
+
+      // Increase Client upload counter
+      await increaseClientUploadCounter(req)
 
       logger.info(`Receive files ${req.files.map((f: any) => f.filename)} for offer ${offerId}, peerId ${peerId}`)
 
