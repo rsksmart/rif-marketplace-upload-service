@@ -41,6 +41,10 @@
     }
   },
 
+  error: {
+    stack: true
+  },
+
   log: {
     level: "info",
     filter: null,
