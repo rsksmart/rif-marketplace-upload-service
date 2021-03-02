@@ -5,9 +5,9 @@ import { Application, UploadService, ServiceAddresses } from '../definitions'
 import { loggingFactory } from '../logger'
 import { errorHandler, waitForReadyApp } from '../utils'
 import UploadJob from './model/upload.model'
-import uploadHandler, { UPLOAD_FOLDER } from './handler/upload.handler'
-import getFileSizeHandler from './handler/getFileSize.handler'
-import getSizeLimitHandler from './handler/getSizeLimit.handler'
+import uploadHandler, { UPLOAD_FOLDER } from './handler/upload'
+import getFileSizeHandler from './handler/getFileSize'
+import getSizeLimitHandler from './handler/getSizeLimit'
 
 const logger = loggingFactory('upload-service')
 
@@ -28,7 +28,6 @@ const upload: UploadService = {
     // Init upload route
     app.post(
       ServiceAddresses.Upload,
-      // uploadMiddleware.array('files'),
       errorHandler(uploadHandler(providerManager, libp2p), logger)
     )
 
