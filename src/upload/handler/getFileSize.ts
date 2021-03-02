@@ -1,5 +1,5 @@
-import { loggingFactory } from '../logger'
-import { ProviderManager } from '../providers'
+import { loggingFactory } from '../../logger'
+import { ProviderManager } from '../../providers'
 
 const logger = loggingFactory('getFileSize.handler')
 type GetFileSizeRouteHandler = (req: any, res: any) => Promise<void>

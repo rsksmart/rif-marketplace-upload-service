@@ -1,5 +1,5 @@
 import config from 'config'
-import { loggingFactory } from '../logger'
+import { loggingFactory } from '../../logger'
 
 const logger = loggingFactory('getSizeLimit.handler')
 type GetSizeLimitRouteHandler = (req: any, res: any) => Promise<void>

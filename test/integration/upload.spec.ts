@@ -9,12 +9,13 @@ import Libp2p from 'libp2p'
 import path from 'path'
 import config from 'config'
 import PeerId, { JSONPeerId } from 'peer-id'
-import { rooms } from '../../src/communication'
 
+import { rooms } from '../../src/communication'
 import { MessageCodesEnum, ServiceAddresses, UploadJobStatus } from '../../src/definitions'
 import { ProviderManager } from '../../src/providers'
-import { UPLOAD_FOLDER } from '../../src/upload'
-import UploadJob from '../../src/upload/upload.model'
+import { UPLOAD_FOLDER } from '../../src/upload/handler/upload'
+import UploadClient from '../../src/upload/model/clients.model'
+import UploadJob from '../../src/upload/model/upload.model'
 import { duplicateObject } from '../../src/utils'
 import jobsGC from '../../src/gc'
 import { createLibp2pRoom, sleep, spawnLibp2p } from '../utils'
@@ -123,26 +124,39 @@ describe('Upload service', function () {
   })
   describe('GC', () => {
     let gcInterval: string
+    let gcClientsInterval: string
     let jobTtl: string
+    let clientTtl: string
     let gc: { stop: () => void }
     before(() => {
-      gcInterval = config.get<string>('gc.interval')
-      jobTtl = config.get<string>('gc.jobTtl')
+      gcInterval = config.get<string>('gc.jobs.interval')
+      gcClientsInterval = config.get<string>('gc.clients.interval')
+      jobTtl = config.get<string>('gc.jobs.ttl')
+      clientTtl = config.get<string>('gc.clients.ttl')
       // @ts-ignore: Config not typed
-      config.gc.interval = '1000ms'
+      config.gc.jobs.interval = '1000ms'
       // @ts-ignore: Config not typed
-      config.gc.jobTtl = '1000ms'
+      config.gc.jobs.ttl = '1000ms'
+      // @ts-ignore: Config not typed
+      config.gc.clients.interval = '1000ms'
+      // @ts-ignore: Config not typed
+      config.gc.clients.ttl = '1000ms'
       gc = jobsGC(testApp.app!.app)
     })
     after(() => {
       // @ts-ignore: Config not typed
-      config.gc.interval = gcInterval
+      config.gc.jobs.interval = gcInterval
       // @ts-ignore: Config not typed
-      config.gc.jobTtl = jobTtl
+      config.gc.jobs.ttl = jobTtl
+      // @ts-ignore: Config not typed
+      config.gc.clients.interval = gcClientsInterval
+      // @ts-ignore: Config not typed
+      config.gc.clients.ttl = clientTtl
       gc.stop()
     })
     afterEach(async () => {
       await UploadJob.destroy({ where: {} })
+      await UploadClient.destroy({ where: {} })
     })
     it('should remove and unpin expired files', async () => {
       const file1Response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/testFile.txt'])
@@ -177,10 +191,24 @@ describe('Upload service', function () {
       expect(await UploadJob.count()).to.be.eql(0)
       expect(rooms.size).to.be.eql(0)
     })
+    it('should remove uploads clients when expired', async () => {
+      const file1Response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/testFile.txt'])
+
+      expect(file1Response.message).to.be.eql('Files uploaded')
+      expect(file1Response.fileHash).to.be.not.null()
+      const client = await UploadClient.findOne()
+      expect(client).to.be.instanceOf(UploadClient)
+      expect(client?.uploads).to.be.eql(1)
+
+      await sleep(3000)
+
+      expect(await UploadClient.count()).to.be.eql(0)
+    })
   })
   describe('Upload API', () => {
     afterEach(async () => {
       await UploadJob.destroy({ where: { } })
+      await UploadClient.destroy({ where: { } })
     })
     it('should upload file', async () => {
       const response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/testFile.txt'])
@@ -198,6 +226,27 @@ describe('Upload service', function () {
       const fileSize = await ipfs.object.stat(new CID(response.fileHash))
       expect(fileSize.CumulativeSize).to.be.eql(response.fileSize)
       await ipfs.pin.rm(new CID(response.fileHash))
+    })
+    it('should track upload attempts per IP', async () => {
+      const response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/testFile.txt'])
+      expect(response.message).to.be.eql('Files uploaded')
+      expect(response.fileHash).to.be.not.null()
+
+      const clients = await UploadClient.findAll()
+      expect(clients.length).to.be.eql(1)
+      const [clientFirstUpload] = clients
+      expect(clientFirstUpload.ip).to.be.an('string')
+      expect(clientFirstUpload.uploads).to.be.eql(1)
+
+      const response2 = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/testFile2.txt'])
+      expect(response2.message).to.be.eql('Files uploaded')
+      expect(response2.fileHash).to.be.not.null()
+
+      const clients2 = await UploadClient.findAll()
+      expect(clients2.length).to.be.eql(1)
+      const [clientSecondUpload] = clients2
+      expect(clientSecondUpload.ip).to.be.an('string')
+      expect(clientSecondUpload.uploads).to.be.eql(2)
     })
     it('should upload file and unpin when receive pinned message', async () => {
       const response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/testFile.txt'])
@@ -225,6 +274,25 @@ describe('Upload service', function () {
       expect(await isPinned(ipfs, new CID(response.fileHash))).to.be.false()
       expect((await UploadJob.findAll()).length).to.be.eql(0)
     })
+    it('should throw on upload DDOS', async () => {
+      const uploadLimitPerPeriod = config.get('uploadLimitPerPeriod')
+      // @ts-ignore: Config not typed
+      config.uploadLimitPerPeriod = 2
+
+      const response = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/testFile.txt'])
+      expect(response.message).to.be.eql('Files uploaded')
+      const response2 = await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/testFile2.txt'])
+      expect(response2.message).to.be.eql('Files uploaded')
+      try {
+        await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/testFile3.txt'])
+      } catch (e) {
+        expect(e.error.error).to.be.eql('Not allowed')
+        expect(e.statusCode).to.be.eql(400)
+      }
+
+      // @ts-ignore: Config not typed
+      config.uploadLimitPerPeriod = uploadLimitPerPeriod
+    })
     it('should throw error if not provide file', async () => {
       try {
         await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string)
@@ -237,7 +305,8 @@ describe('Upload service', function () {
       try {
         await upload(testApp.providerAddress, 'testAccount', testApp.peerId?.id as string, ['./test/integration/files/bigFile.txt'])
       } catch (e) {
-        expect(e.error.message).to.be.eql('File too large')
+        expect(e.error.error).to.be.eql('File too large')
+        expect(e.statusCode).to.be.eql(422)
       }
     })
     it('should throw if no required params provided', async () => {

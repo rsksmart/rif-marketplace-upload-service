@@ -6,7 +6,7 @@ import {
   MessageCodesEnum
 } from '../definitions'
 import { ProviderManager } from '../providers'
-import UploadJob from '../upload/upload.model'
+import UploadJob from '../upload/model/upload.model'
 
 async function hashPinnedHandler (
   offerId: string,

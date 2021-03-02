@@ -2,6 +2,7 @@ import compress from 'compression'
 import helmet from 'helmet'
 import cors, { CorsOptionsDelegate } from 'cors'
 import config from 'config'
+import requestIp from 'request-ip'
 
 import feathers from '@feathersjs/feathers'
 import express from '@feathersjs/express'
@@ -33,6 +34,9 @@ export async function appFactory (): Promise<{ app: Application, stop: () => Pro
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
 
+  // Enable IP mdlw
+  app.use(requestIp.mw())
+
   // Set up Plugins and providers
   app.configure(express.rest())
   app.configure(socketio())
@@ -54,7 +58,11 @@ export async function appFactory (): Promise<{ app: Application, stop: () => Pro
   // Log errors in hooks
   app.hooks({
     error (context) {
-      logger.error(`Error in '${context.path}' service method '${context.method}'`, context.error.stack)
+      if (context.params.provider) {
+        delete context.error.stack
+        delete context.error.hook
+      }
+      logger.error(`Error in '${context.path}' service method '${context.method}'`, config.get('error.stack') && context.error.stack)
     }
   })
 
