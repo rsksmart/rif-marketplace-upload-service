@@ -58,11 +58,9 @@ export async function appFactory (): Promise<{ app: Application, stop: () => Pro
   // Log errors in hooks
   app.hooks({
     error (context) {
-      if (context.params.provider) {
-        delete context.error.stack
-        delete context.error.hook
-      }
       logger.error(`Error in '${context.path}' service method '${context.method}'`, config.get('error.stack') && context.error.stack)
+      delete context.error.stack
+      delete context.error.hook
     }
   })
 
