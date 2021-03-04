@@ -1,3 +1,13 @@
+<a name="0.2.1"></a>
+## [0.2.1](https://github.com/rsksmart/rif-storage-upload-service/compare/v0.2.0...v0.2.1) (2021-03-04)
+
+
+### Features
+
+* basic ddos protection ([#129](https://github.com/rsksmart/rif-storage-upload-service/issues/129)) ([115349d](https://github.com/rsksmart/rif-storage-upload-service/commit/115349d))
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://github.com/rsksmart/rif-storage-upload-service/compare/v0.1.1...v0.2.0) (2021-01-21)
 
