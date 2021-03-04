@@ -125,9 +125,10 @@
   "contributors": [
     "Adam Uhlíř <adam@uhlir.dev>",
     "Alvaro Fariña <farinalvaro@gmail.com>",
+    "Artem B <artem.bv@protonmail.com>",
     "Julian M. Rodriguez <56316686+julianmrodri@users.noreply.github.com>",
-    "Nazar Duchak <41945483+nduchak@users.noreply.github.com>",
     "Nazar Duchak <nazar@iovlabs.org>",
+    "Nazar Duchak <41945483+nduchak@users.noreply.github.com>",
     "dependabot-preview[bot] <27856297+dependabot-preview[bot]@users.noreply.github.com>"
   ],
   "oclif": {
