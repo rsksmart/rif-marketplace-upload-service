@@ -64,7 +64,7 @@
     "@rsksmart/rif-communications-pubsub": "0.1.0-dev.11",
     "@types/request-ip": "0.0.35",
     "check-disk-space": "^2.1.0",
-    "cids": "1.1.5",
+    "cids": "1.1.6",
     "colors": "^1.4.0",
     "compression": "^1.7.4",
     "config": "^3.3.1",
