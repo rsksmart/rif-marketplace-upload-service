@@ -21,11 +21,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup Node 14
-        uses: actions/setup-node@v1
-        with:
-          node-version: '14'
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -38,25 +33,24 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Extract Git Tag
-        run: echo "GIT_TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
-
-      - name: Echo git tag
+        run: echo "GIT_TAG="$(git describe --abbrev=0 --tags)"" >> $GITHUB_ENV
+      - name: Echo Git tag
         run: echo "${{ env.GIT_TAG }}"
 
-      #- name: Build, tag, and push image to Amazon ECR
-      #  env:
-      #    ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      #    ECR_REPOSITORY: rif-marketplace-cache
-      #    IMAGE_TAG: latest
-      #  run: |
-      #     docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-      #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      - name: Build, tag, and push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: rif-marketplace-upload
+          IMAGE_TAG: ${{ env.GIT_TAG }}
+        run: |
+           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Send a command to EC2 instance(s)
         # This is needed basically to test if ssm is responding correctly
         run: |
            aws ssm send-command \
-               --instance-ids "i-03882e46fb18eb0a8" \
+               --instance-ids "" \
                --document-name "AWS-RunShellScript" \
                --comment "IP config" \
                --parameters commands=ifconfig \
