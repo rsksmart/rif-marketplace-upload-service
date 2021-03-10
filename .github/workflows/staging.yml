@@ -52,7 +52,7 @@ jobs:
         # This is needed basically to test if ssm is responding correctly
         run: |
            aws ssm send-command \
-               --instance-ids "" \
+               --instance-ids "i-05eb45a093f763f97" \
                --document-name "AWS-RunShellScript" \
                --comment "IP config" \
                --parameters commands=ifconfig \
@@ -62,7 +62,7 @@ jobs:
         run: |
           aws ssm send-command \
               --document-name "AWS-RunRemoteScript" \
-              --instance-ids "" \
+              --instance-ids "i-05eb45a093f763f97" \
               --region=${{ secrets.STAGING_AWS_REGION }} \
               --comment "github interaction-rif-upload" \
               --parameters '{"sourceType":["GitHub"],"sourceInfo":["{\"owner\":\"rootstock\", \"repository\":\"ask-devops\", \"path\": \"rif-marketplace/\",\"tokenInfo\":\"{{ssm-secure:github-token}}\"}"],"commandLine":["deploy-marketplace-upload.sh"]}'
