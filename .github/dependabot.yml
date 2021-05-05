@@ -24,5 +24,4 @@ updates:
     - 4.0.2
   - dependency-name: ipfs-http-client
     versions:
-    - 48.2.2
     - 49.0.1
