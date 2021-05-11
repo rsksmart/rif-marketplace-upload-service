@@ -1,0 +1,7 @@
+{
+  port: 3030,
+  networkId: 33,
+  error: {
+    stack: true
+  }
+}
