@@ -1,17 +1,17 @@
 ---
-name: RIF Marketplace Testnet PINNER deploy
+name: RIF Marketplace mainnet PINNER deploy
 
 on:
   push:
     branches:
-      - testnet
+      - mainnet
 
 jobs:
-  deploy-testnet:
-    name: RIF Marketplace PINNER - TESTNET
+  deploy-mainnet:
+    name: RIF Marketplace PINNER - mainnet
     runs-on: ubuntu-latest
     environment:
-      name: testnet
+      name: mainnet
 
     steps:
 
@@ -23,17 +23,17 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.TESTNET_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.TESTNET_AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.TESTNET_AWS_REGION }}
+          aws-access-key-id: ${{ secrets.MAINNET_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.MAINNET_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.MAINNET_AWS_REGION }}
 
 
-      - name: Deploy rif-marketplace-pinner testnet
+      - name: Deploy rif-marketplace-pinner MAINNET
         run: |
           aws ssm send-command \
               --document-name "AWS-RunRemoteScript" \
-              --targets '[{"Key":"InstanceIds","Values":["${{ secrets.TESTNET_EC2_ID_1 }}","${{ secrets.TESTNET_EC2_ID_2 }}"]}]' \
-              --region=${{ secrets.TESTNET_AWS_REGION }} \
+              --targets '[{"Key":"InstanceIds","Values":["${{ secrets.MAINNET_EC2_ID_1 }}","${{ secrets.MAINNET_EC2_ID_2 }}"]}]' \
+              --region=${{ secrets.MAINNET_AWS_REGION }} \
               --comment "github interaction-rif-marketplace-pinner" \
-              --parameters '{"sourceType":["GitHub"],"sourceInfo":["{\"owner\":\"rootstock\", \"repository\":\"ask-devops\", \"path\": \"rif-marketplace/\",\"tokenInfo\":\"{{ssm-secure:github-token}}\"}"],"commandLine":["deploy-marketplace-pinner-testnet.sh"]}'
+              --parameters '{"sourceType":["GitHub"],"sourceInfo":["{\"owner\":\"rootstock\", \"repository\":\"ask-devops\", \"path\": \"rif-marketplace/\",\"tokenInfo\":\"{{ssm-secure:github-token}}\"}"],"commandLine":["deploy-marketplace-pinner-mainnet.sh"]}'
 
