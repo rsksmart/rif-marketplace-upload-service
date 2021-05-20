@@ -1,5 +1,5 @@
 ---
-name: RIF Marketplace UPLOAD service  deploy
+name: RIF Marketplace Testnet UPLOAD service deploy
 
 on:
   push:
@@ -34,4 +34,3 @@ jobs:
               --region=${{ secrets.TESTNET_AWS_REGION }} \
               --comment "github interaction-rif-upload" \
               --parameters '{"sourceType":["GitHub"],"sourceInfo":["{\"owner\":\"rootstock\", \"repository\":\"ask-devops\", \"path\": \"rif-marketplace/\",\"tokenInfo\":\"{{ssm-secure:github-token}}\"}"],"commandLine":["deploy-marketplace-upload-testnet.sh"]}'
-
