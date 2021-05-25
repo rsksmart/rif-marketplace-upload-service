@@ -1,5 +1,5 @@
 ---
-name: RIF Marketplace UPLOAD service  deploy
+name: RIF Marketplace UPLOAD STAGING deploy
 
 on:
   push:
