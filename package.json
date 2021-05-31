@@ -70,7 +70,7 @@
     "config": "^3.3.1",
     "cors": "^2.8.5",
     "helmet": "^4.2.0",
-    "ipfs-http-client": "^49.0.2",
+    "ipfs-http-client": "^50.1.0",
     "listr": "^0.14.3",
     "multer": "^1.4.2",
     "multiaddr": "^9.0.1",
