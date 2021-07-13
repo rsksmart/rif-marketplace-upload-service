@@ -62,7 +62,7 @@
     "@oclif/parser": "^3.8.5",
     "@oclif/plugin-help": "^3.2.0",
     "@rsksmart/rif-communications-pubsub": "0.1.0-dev.11",
-    "@types/request-ip": "0.0.35",
+    "@types/request-ip": "0.0.37",
     "check-disk-space": "^2.1.0",
     "cids": "1.1.6",
     "colors": "^1.4.0",
@@ -115,7 +115,7 @@
     "cross-env": "^7.0.2",
     "dirty-chai": "^2.0.1",
     "form-data": "^4.0.0",
-    "sinon": "^10.0.0"
+    "sinon": "^11.1.1"
   },
   "engines": {
     "node": ">=10.0.0",
